@@ -1,0 +1,1 @@
+# ajinashop-luxury
