@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AjinaShop — Luxury Beauty & Fashion</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400&family=Quicksand:wght@300;400;500;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+@property --angle { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
+:root{
+  --bg:#060206;--bg2:#0f0610;--bg3:#1a0a14;--fg:#FFF8F8;--fg2:#E8D5D5;--m:#9B7A8A;
+  --ac:#E8A0BF;--ac2:#D4AF37;--rose:#C7386D;--rose2:#FF6B9D;--rdk:#6B1D3A;
+  --card:rgba(30,10,20,.55);--card2:rgba(45,15,30,.4);--bd:rgba(232,160,191,.08);
+  --bd2:rgba(232,160,191,.15);--gl:rgba(255,245,245,.025);--sh:rgba(199,56,109,.25);
+  --gold:rgba(212,175,55,.15);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Quicksand',sans-serif;background:var(--bg);color:var(--fg);overflow-x:hidden;cursor:none;-webkit-font-smoothing:antialiased}
+a{text-decoration:none;color:inherit;cursor:none}button{font-family:inherit;border:none;cursor:none;outline:none;background:none}img{display:block;max-width:100%}ul{list-style:none}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--rose),var(--ac2));border-radius:3px}
+
+/* LOADER */
+#loader{position:fixed;inset:0;z-index:10000;background:var(--bg);display:flex;align-items:center;justify-content:center;flex-direction:column;transition:opacity 1s cubic-bezier(.65,0,.35,1),visibility 1s}
+#loader.gone{opacity:0;visibility:hidden;pointer-events:none}
+.ld-l{font-family:'Playfair Display',serif;font-size:4rem;font-weight:900;letter-spacing:-1px;margin-bottom:.5rem}
+.ld-l span{display:inline-block;opacity:0;transform:translateY(40px) rotateX(-90deg);animation:ldL .8s cubic-bezier(.23,1,.32,1) forwards}
+.ld-l .glow-char{background:linear-gradient(135deg,var(--ac),var(--ac2),var(--rose),var(--ac));background-size:300% 300%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:gs 3s ease infinite}
+@keyframes ldL{to{opacity:1;transform:translateY(0) rotateX(0)}}
+.ld-sub{font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:var(--m);letter-spacing:3px;text-transform:uppercase;opacity:0;animation:fadeIn .6s 1.2s forwards}
+.ld-bar{width:180px;height:2px;background:var(--bd);margin:2rem auto 0;border-radius:2px;overflow:hidden;opacity:0;animation:fadeIn .4s .8s forwards}
+.ld-fill{height:100%;width:0;background:linear-gradient(90deg,var(--rose),var(--ac),var(--ac2));animation:ldF 2s .8s cubic-bezier(.23,1,.32,1) forwards}
+@keyframes ldF{0%{width:0}40%{width:65%}100%{width:100%}}
+@keyframes fadeIn{to{opacity:1}}
+@keyframes gs{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+
+/* CURSOR */
+.cur{position:fixed;width:28px;height:28px;border-radius:50%;border:1.5px solid var(--ac);z-index:9999;pointer-events:none;mix-blend-mode:difference;transform:translate(-50%,-50%);transition:width .4s,height .4s,border-color .4s,background .4s;will-change:transform}
+.cur.act{width:60px;height:60px;border-color:var(--ac2);background:rgba(212,175,55,.08)}
+.cur.clk{transform:translate(-50%,-50%) scale(.7)}
+.cur-d{position:fixed;width:6px;height:6px;border-radius:50%;background:var(--ac);z-index:9999;pointer-events:none;transform:translate(-50%,-50%);box-shadow:0 0 10px var(--ac),0 0 20px var(--ac);will-change:transform}
+
+/* SCROLL PROGRESS */
+#scProg{position:fixed;top:0;left:0;height:3px;z-index:101;background:linear-gradient(90deg,var(--rose),var(--ac),var(--ac2),var(--rose));background-size:200% 100%;width:0;transition:width .05s linear;animation:progGlow 2s linear infinite}
+@keyframes progGlow{0%{background-position:0% 0}100%{background-position:200% 0}}
+
+/* GRAIN */
+#grain{position:fixed;inset:0;z-index:9998;pointer-events:none;opacity:.04;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:256px}
+
+/* BLOBS */
+.bg-fx{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.blob{position:absolute;border-radius:50%;filter:blur(120px);opacity:.15;will-change:transform}
+.b1{width:800px;height:800px;background:radial-gradient(circle,var(--rose),transparent 70%);top:-15%;left:-10%;animation:blobMove1 20s ease-in-out infinite alternate}
+.b2{width:700px;height:700px;background:radial-gradient(circle,var(--ac),transparent 70%);bottom:-20%;right:-15%;animation:blobMove2 18s ease-in-out infinite alternate}
+.b3{width:500px;height:500px;background:radial-gradient(circle,var(--rdk),transparent 70%);top:45%;left:35%;animation:blobMove3 22s ease-in-out infinite alternate}
+.b4{width:400px;height:400px;background:radial-gradient(circle,var(--ac2),transparent 70%);top:10%;right:10%;opacity:.08;animation:blobMove4 25s ease-in-out infinite alternate}
+@keyframes blobMove1{0%{transform:translate(0,0) scale(1)}50%{transform:translate(80px,-60px) scale(1.15)}100%{transform:translate(-50px,40px) scale(.9)}}
+@keyframes blobMove2{0%{transform:translate(0,0) scale(1)}50%{transform:translate(-60px,50px) scale(1.1)}100%{transform:translate(40px,-30px) scale(.95)}}
+@keyframes blobMove3{0%{transform:translate(0,0) scale(1)}50%{transform:translate(50px,30px) scale(1.2)}100%{transform:translate(-30px,-40px) scale(.85)}}
+@keyframes blobMove4{0%{transform:translate(0,0) scale(1)}50%{transform:translate(-40px,60px) scale(1.1)}100%{transform:translate(30px,-20px) scale(.92)}}
+
+/* PARTICLES */
+#ptcC{position:fixed;inset:0;z-index:1;pointer-events:none}
+
+/* NAV */
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(6,2,6,.75);backdrop-filter:blur(40px) saturate(180%);border-bottom:1px solid var(--bd);transition:transform .5s,background .4s}
+.nav.hide{transform:translateY(-100%)}
+.nav.scrolled{background:rgba(6,2,6,.92);border-bottom-color:var(--bd2)}
+.nav-in{max-width:1400px;margin:0 auto;padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between}
+.nav-link{position:relative;color:var(--m);font-size:.85rem;font-weight:500;transition:color .3s;padding:.3rem 0;overflow:hidden}
+.nav-link::after{content:'';position:absolute;bottom:0;left:0;width:100%;height:1.5px;background:linear-gradient(90deg,var(--ac),var(--ac2));transform:translateX(-101%);transition:transform .4s cubic-bezier(.23,1,.32,1)}
+.nav-link:hover{color:var(--ac)}.nav-link:hover::after{transform:translateX(0)}
+.nav-link i{margin-right:.4rem;font-size:.75rem}
+
+/* BUTTONS */
+.btn-r{background:linear-gradient(135deg,var(--rose),var(--ac));color:#fff;font-weight:700;position:relative;overflow:hidden;transition:all .4s cubic-bezier(.23,1,.32,1);display:inline-flex;align-items:center;gap:.5rem}
+.btn-r::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--ac2),var(--rose));opacity:0;transition:opacity .4s}
+.btn-r:hover{transform:translateY(-3px) scale(1.02);box-shadow:0 15px 40px var(--sh),0 0 60px rgba(199,56,109,.15)}
+.btn-r:hover::before{opacity:1}
+.btn-r:active{transform:scale(.97)}
+.btn-r span{position:relative;z-index:2}
+.btn-o{border:1.5px solid var(--ac2);background:transparent;color:var(--ac2);font-weight:600;transition:all .4s cubic-bezier(.23,1,.32,1);overflow:hidden;position:relative;display:inline-flex;align-items:center;gap:.5rem}
+.btn-o::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--ac2),var(--ac));opacity:0;transition:opacity .4s}
+.btn-o:hover{color:var(--bg);border-color:var(--ac2);box-shadow:0 10px 30px rgba(212,175,55,.2)}
+.btn-o:hover::before{opacity:1}
+.btn-o:hover span{position:relative;z-index:2}
+.btn-o:active{transform:scale(.97)}
+.rip{position:absolute;border-radius:50%;background:rgba(255,255,255,.25);transform:scale(0);animation:rip .7s cubic-bezier(.23,1,.32,1) forwards;pointer-events:none}
+@keyframes rip{to{transform:scale(4);opacity:0}}
+
+/* GLOW TEXT */
+.glow{background:linear-gradient(135deg,var(--ac),var(--ac2),var(--rose),var(--ac2),var(--ac));background-size:400% 400%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:gs 6s ease infinite}
+
+/* REVEAL */
+.rv{opacity:0;transform:translateY(60px);transition:opacity 1s cubic-bezier(.23,1,.32,1),transform 1s cubic-bezier(.23,1,.32,1)}.rv.v{opacity:1;transform:none}
+.rv-s{opacity:0;transform:scale(.85) translateY(30px);transition:opacity .8s,transform .8s cubic-bezier(.23,1,.32,1)}.rv-s.v{opacity:1;transform:none}
+.rv-l{opacity:0;transform:translateX(-60px);transition:opacity 1s,transform 1s cubic-bezier(.23,1,.32,1)}.rv-l.v{opacity:1;transform:none}
+.rv-r{opacity:0;transform:translateX(60px);transition:opacity 1s,transform 1s cubic-bezier(.23,1,.32,1)}.rv-r.v{opacity:1;transform:none}
+
+/* 3D CARD */
+.c3d{perspective:1200px;transform-style:preserve-3d}
+.c3d-i{transition:transform .6s cubic-bezier(.23,1,.32,1),box-shadow .5s;transform-style:preserve-3d;will-change:transform}
+.c3d:hover .c3d-i{box-shadow:0 40px 80px var(--sh),0 0 100px rgba(199,56,109,.1)}
+
+/* ANIMATED BORDER */
+.ab{position:relative;border-radius:24px}
+.ab::before{content:'';position:absolute;inset:-2px;border-radius:26px;background:conic-gradient(from var(--angle,0deg),var(--rose),var(--ac),var(--ac2),var(--rdk),var(--rose));animation:abSpin 4s linear infinite;z-index:-1;opacity:.7}
+.ab::after{content:'';position:absolute;inset:-2px;border-radius:26px;background:conic-gradient(from var(--angle,0deg),var(--rose),var(--ac),var(--ac2),var(--rdk),var(--rose));animation:abSpin 4s linear infinite;z-index:-1;filter:blur(8px);opacity:.3}
+@keyframes abSpin{to{--angle:360deg}}
+.ab-in{position:relative;z-index:1;border-radius:22px;background:var(--card);overflow:hidden;backdrop-filter:blur(20px)}
+
+/* IMAGE ZOOM */
+.iz{overflow:hidden}.iz img{transition:transform .8s cubic-bezier(.23,1,.32,1);will-change:transform}
+.c3d:hover .iz img{transform:scale(1.15)}
+
+/* SHIMMER */
+.shm{position:relative;overflow:hidden}
+.shm::after{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:conic-gradient(transparent 250deg,rgba(255,255,255,.06) 280deg,transparent 310deg);animation:shmR 5s linear infinite;z-index:3;pointer-events:none}
+@keyframes shmR{to{transform:rotate(360deg)}}
+
+/* TABS */
+.tb{padding:.6rem 1.4rem;border-radius:14px;font-size:.82rem;font-weight:600;background:var(--gl);border:1.5px solid var(--bd);color:var(--m);transition:all .4s cubic-bezier(.23,1,.32,1);position:relative;z-index:2;overflow:hidden}
+.tb::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(232,160,191,.1),rgba(212,175,55,.05));opacity:0;transition:opacity .3s}
+.tb:hover{color:var(--fg);border-color:var(--bd2);transform:translateY(-2px)}
+.tb:hover::before{opacity:1}
+.tb.on{color:var(--fg);background:linear-gradient(135deg,rgba(232,160,191,.12),rgba(212,175,55,.08));border-color:rgba(232,160,191,.25);box-shadow:0 4px 20px rgba(199,56,109,.1),inset 0 1px 0 rgba(255,255,255,.05)}
+.tab-line{position:absolute;bottom:-8px;height:3px;background:linear-gradient(90deg,var(--ac2),var(--ac),var(--rose));border-radius:3px;transition:left .5s,width .5s cubic-bezier(.23,1,.32,1);box-shadow:0 0 10px var(--ac)}
+
+/* STAT CARD */
+.stc{position:relative;border-radius:24px;background:var(--card);border:1.5px solid var(--bd);transition:all .5s cubic-bezier(.23,1,.32,1);overflow:hidden;backdrop-filter:blur(10px)}
+.stc::before{content:'';position:absolute;inset:0;border-radius:24px;background:linear-gradient(135deg,rgba(232,160,191,.08),transparent 40%,rgba(212,175,55,.06));opacity:0;transition:opacity .5s}
+.stc::after{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.03),transparent);transition:left .7s}
+.stc:hover::before{opacity:1}.stc:hover::after{left:100%}
+.stc:hover{border-color:var(--bd2);transform:translateY(-8px) scale(1.02);box-shadow:0 25px 50px var(--sh),0 0 80px rgba(199,56,109,.08)}
+.stc-ic{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:1.2rem;transition:all .4s;position:relative;overflow:hidden}
+.stc-ic::before{content:'';position:absolute;inset:0;opacity:.2;border-radius:14px}
+.stc:hover .stc-ic{transform:scale(1.1) rotate(-5deg)}
+
+/* CATEGORY CARD */
+.catc{transition:all .6s cubic-bezier(.23,1,.32,1);position:relative;overflow:hidden;border-radius:24px;cursor:none}
+.catc::before{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(6,2,6,.95) 0%,rgba(6,2,6,.3) 50%,transparent 100%);z-index:2;transition:opacity .5s}
+.catc:hover{transform:translateY(-12px) scale(1.03);box-shadow:0 35px 70px var(--sh),0 0 100px rgba(199,56,109,.1)}
+.catc:hover::before{opacity:.85}
+.catc img{transition:transform 1s cubic-bezier(.23,1,.32,1);width:100%;height:100%;object-fit:cover}
+.catc:hover img{transform:scale(1.15)}
+.catc-info{position:absolute;bottom:0;left:0;right:0;padding:2rem;z-index:3;transform:translateY(10px);transition:transform .5s cubic-bezier(.23,1,.32,1)}
+.catc:hover .catc-info{transform:translateY(0)}
+.catc-ic{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:.8rem;background:rgba(255,255,255,.08);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.1);transition:all .4s}
+.catc:hover .catc-ic{transform:scale(1.15) rotate(-10deg);background:rgba(255,255,255,.15)}
+
+/* HERO FLOAT */
+.hf{animation:hfl 8s ease-in-out infinite;transform-style:preserve-3d}
+@keyframes hfl{0%,100%{transform:translateY(0) rotateY(0) rotateX(0)}25%{transform:translateY(-15px) rotateY(5deg) rotateX(2deg)}50%{transform:translateY(-25px) rotateY(0) rotateX(0)}75%{transform:translateY(-15px) rotateY(-5deg) rotateX(-2deg)}}
+.hf2{animation:hfl2 6s ease-in-out infinite}
+@keyframes hfl2{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-18px) rotate(3deg)}}
+.hf3{animation:hfl3 10s ease-in-out infinite}
+@keyframes hfl3{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(10px,-15px) scale(1.05)}66%{transform:translate(-5px,10px) scale(.95)}}
+
+/* SPIN RING */
+.spr{animation:sr 40s linear infinite}@keyframes sr{to{transform:rotate(360deg)}}
+.spr-rev{animation:sr 30s linear infinite reverse}
+
+/* PULSE */
+.pls{animation:pls 2.5s ease-in-out infinite}
+@keyframes pls{0%,100%{box-shadow:0 0 0 0 rgba(199,56,109,.5)}50%{box-shadow:0 0 0 12px rgba(199,56,109,0)}}
+
+/* TOAST */
+.toast{position:fixed;bottom:30px;right:30px;z-index:9999;padding:18px 28px;border-radius:18px;background:linear-gradient(135deg,var(--rose),var(--rdk));color:#fff;font-weight:600;font-size:.9rem;box-shadow:0 20px 50px var(--sh),0 0 40px rgba(199,56,109,.2);transform:translateX(150%) scale(.8);transition:transform .6s cubic-bezier(.23,1,.32,1);display:flex;align-items:center;gap:14px;backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.1)}
+.toast.show{transform:translateX(0) scale(1)}
+.toast-ic{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;animation:tPop .5s cubic-bezier(.68,-.55,.27,1.55) .1s both}
+@keyframes tPop{0%{transform:scale(0)}100%{transform:scale(1)}}
+
+/* MODAL */
+.mo{position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.7);backdrop-filter:blur(20px);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .5s cubic-bezier(.23,1,.32,1)}
+.mo.open{opacity:1;pointer-events:all}
+.mo-b{background:var(--bg2);border:1.5px solid var(--bd2);border-radius:28px;max-width:540px;width:92%;padding:36px;transform:scale(.8) translateY(40px) rotateX(10deg);transition:transform .6s cubic-bezier(.23,1,.32,1);box-shadow:0 40px 80px rgba(0,0,0,.5),0 0 100px rgba(199,56,109,.1)}
+.mo.open .mo-b{transform:scale(1) translateY(0) rotateX(0)}
+
+/* QUICK VIEW */
+.qv{position:fixed;inset:0;z-index:900;background:rgba(0,0,0,.8);backdrop-filter:blur(25px);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .5s cubic-bezier(.23,1,.32,1)}
+.qv.open{opacity:1;pointer-events:all}
+.qv-c{background:var(--bg2);border:1.5px solid var(--bd2);border-radius:28px;max-width:840px;width:92%;overflow:hidden;transform:scale(.85) rotateX(8deg) translateY(20px);transition:transform .7s cubic-bezier(.23,1,.32,1);box-shadow:0 50px 100px rgba(0,0,0,.6),0 0 120px rgba(199,56,109,.1)}
+.qv.open .qv-c{transform:scale(1) rotateX(0) translateY(0)}
+
+/* STAR RATING */
+.s1{color:var(--ac2);filter:drop-shadow(0 0 3px rgba(212,175,55,.3))}.s0{color:rgba(212,175,55,.12)}
+
+/* MARQUEE */
+.mq-wrap{overflow:hidden;white-space:nowrap;position:relative}
+.mq-wrap::before,.mq-wrap::after{content:'';position:absolute;top:0;bottom:0;width:120px;z-index:2;pointer-events:none}
+.mq-wrap::before{left:0;background:linear-gradient(90deg,var(--bg),transparent)}
+.mq-wrap::after{right:0;background:linear-gradient(-90deg,var(--bg),transparent)}
+.mq{display:inline-flex;gap:60px;animation:mqA 40s linear infinite;align-items:center}
+.mq:hover{animation-play-state:paused}
+@keyframes mqA{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.mq-item{font-size:.75rem;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--m);opacity:.6;transition:all .4s;position:relative}
+.mq-item:hover{opacity:1;color:var(--ac);transform:scale(1.1)}
+.mq-sep{color:var(--ac);opacity:.4;font-size:.5rem}
+
+/* BACK TO TOP */
+#btt{position:fixed;bottom:30px;left:30px;z-index:200;width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;background:var(--card);border:1.5px solid var(--bd);color:var(--ac);font-size:1rem;opacity:0;transform:translateY(30px) scale(.8);transition:all .5s cubic-bezier(.23,1,.32,1);pointer-events:none;backdrop-filter:blur(20px);overflow:hidden}
+#btt.vis{opacity:1;transform:none;pointer-events:all}
+#btt::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--rose),var(--ac));opacity:0;transition:opacity .4s}
+#btt:hover{background:transparent;border-color:var(--ac);transform:translateY(-4px) scale(1.1);box-shadow:0 10px 30px var(--sh)}
+#btt:hover::before{opacity:1}
+#btt:hover i{position:relative;z-index:2;color:#fff}
+#btt i{transition:transform .4s}#btt:hover i{transform:translateY(-2px)}
+
+/* FLY TO CART */
+.fly-img{position:fixed;z-index:999;width:60px;height:60px;border-radius:14px;object-fit:cover;pointer-events:none;transition:all .8s cubic-bezier(.23,1,.32,1);opacity:1;box-shadow:0 15px 40px var(--sh)}
+
+/* PRODUCT CARD ENHANCEMENTS */
+.p-badge{position:absolute;top:1rem;left:1rem;padding:.35rem .85rem;border-radius:10px;font-size:.72rem;font-weight:800;color:#fff;z-index:4;animation:badgeIn .5s cubic-bezier(.23,1,.32,1) both;backdrop-filter:blur(10px)}
+@keyframes badgeIn{from{transform:scale(0) rotate(-10deg);opacity:0}to{transform:scale(1) rotate(0);opacity:1}}
+.p-wish{position:absolute;top:1rem;right:1rem;width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.5);backdrop-filter:blur(15px);color:#fff;z-index:4;transition:all .4s cubic-bezier(.23,1,.32,1);border:1px solid rgba(255,255,255,.1)}
+.p-wish:hover{transform:scale(1.2) rotate(-15deg);background:rgba(199,56,109,.6);color:var(--rose2)}
+.p-wish.active{color:var(--rose);background:rgba(199,56,109,.3)}
+.p-wish.active i{animation:heartBeat .8s ease}
+@keyframes heartBeat{0%,100%{transform:scale(1)}25%{transform:scale(1.3)}50%{transform:scale(1)}75%{transform:scale(1.2)}}
+.p-disc{position:absolute;bottom:1rem;right:1rem;padding:.3rem .7rem;border-radius:8px;font-size:.72rem;font-weight:800;color:#fff;background:var(--rose);z-index:4;animation:badgeIn .5s .1s cubic-bezier(.23,1,.32,1) both}
+.p-qv-hint{position:absolute;bottom:1rem;left:1rem;padding:.4rem .9rem;border-radius:10px;font-size:.7rem;font-weight:600;color:var(--fg);background:rgba(0,0,0,.5);backdrop-filter:blur(15px);z-index:4;transition:all .4s;opacity:1;transform:translateY(0);border:1px solid rgba(255,255,255,.08)}
+.c3d:hover .p-qv-hint{opacity:0;transform:translateY(10px)}
+.p-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(6,2,6,.9) 0%,transparent 60%);opacity:0;transition:opacity .5s;z-index:3;display:flex;align-items:flex-end;justify-content:center;padding-bottom:1.5rem}
+.c3d:hover .p-overlay{opacity:1}
+.p-ov-btn{padding:.7rem 1.5rem;border-radius:14px;background:var(--card);border:1.5px solid var(--bd2);color:var(--fg);font-size:.8rem;font-weight:600;backdrop-filter:blur(20px);transform:translateY(20px);opacity:0;transition:all .5s cubic-bezier(.23,1,.32,1);display:flex;align-items:center;gap:.5rem}
+.c3d:hover .p-ov-btn{transform:translateY(0);opacity:1;transition-delay:.1s}
+.p-ov-btn:hover{background:var(--ac);color:var(--bg);border-color:var(--ac);transform:translateY(0) scale(1.05)}
+
+/* COLOR SWATCHES */
+.swatches{display:flex;gap:.4rem;margin-top:.6rem}
+.swatch{width:18px;height:18px;border-radius:50%;cursor:none;border:2px solid transparent;transition:all .3s;position:relative}
+.swatch:hover{transform:scale(1.3);border-color:var(--fg)}
+.swatch.active{box-shadow:0 0 0 2px var(--bg),0 0 0 4px var(--ac)}
+
+/* COUNTDOWN */
+.cd-box{text-align:center;background:var(--card);border:1.5px solid var(--bd);border-radius:16px;padding:.8rem .6rem;min-width:64px;backdrop-filter:blur(10px);transition:all .4s}
+.cd-box:hover{border-color:var(--bd2);transform:translateY(-4px);box-shadow:0 10px 30px var(--sh)}
+.cd-num{font-size:1.6rem;font-weight:900;color:var(--ac);font-family:'Playfair Display',serif;line-height:1}
+.cd-lbl{font-size:.6rem;color:var(--m);text-transform:uppercase;letter-spacing:2px;margin-top:.3rem}
+.cd-sep{font-size:1.4rem;font-weight:300;color:var(--bd2);align-self:flex-start;padding-top:.5rem}
+
+/* TESTIMONIAL CARD */
+.t-card{position:relative;border-radius:24px;padding:2.2rem;background:var(--card);border:1.5px solid var(--bd);overflow:hidden;transition:all .5s cubic-bezier(.23,1,.32,1);backdrop-filter:blur(10px)}
+.t-card::before{content:'"';position:absolute;top:1rem;right:1.5rem;font-family:'Playfair Display',serif;font-size:4rem;color:var(--ac);opacity:.08;line-height:1}
+.t-card:hover{border-color:var(--bd2);transform:translateY(-8px);box-shadow:0 25px 50px rgba(0,0,0,.3),0 0 60px rgba(199,56,109,.08)}
+.t-stars{display:flex;gap:4px;margin-bottom:1.2rem}
+.t-avatar{width:48px;height:48px;border-radius:50%;object-fit:cover;border:2px solid var(--bd);transition:all .4s}
+.t-card:hover .t-avatar{border-color:var(--ac2);transform:scale(1.1)}
+
+/* NEWSLETTER */
+.nl-wrap{border-radius:28px;padding:4rem 2.5rem;text-align:center;position:relative;overflow:hidden;background:linear-gradient(135deg,rgba(45,10,30,.85),rgba(20,6,14,.9));border:1.5px solid var(--bd2)}
+.nl-wrap::before{content:'';position:absolute;top:-50%;left:50%;transform:translateX(-50%);width:800px;height:400px;background:radial-gradient(ellipse,rgba(199,56,109,.2),transparent 70%);animation:nlPulse 6s ease-in-out infinite}
+@keyframes nlPulse{0%,100%{opacity:.5;transform:translateX(-50%) scale(1)}50%{opacity:.8;transform:translateX(-50%) scale(1.1)}}
+.nl-input{flex:1;min-width:220px;padding:.85rem 1.4rem;border-radius:16px;background:var(--gl);border:1.5px solid var(--bd);color:var(--fg);font-size:.9rem;outline:none;transition:all .4s;font-family:'Quicksand',sans-serif}
+.nl-input:focus{border-color:var(--ac);box-shadow:0 0 30px rgba(232,160,191,.15),inset 0 1px 0 rgba(255,255,255,.05);background:rgba(232,160,191,.05)}
+.nl-input::placeholder{color:var(--m);opacity:.6}
+
+/* FOOTER */
+.ft-link{position:relative;color:var(--m);font-size:.82rem;transition:all .3s;display:inline-block}
+.ft-link::after{content:'';position:absolute;bottom:-2px;left:0;width:0;height:1px;background:linear-gradient(90deg,var(--ac),var(--ac2));transition:width .4s cubic-bezier(.23,1,.32,1)}
+.ft-link:hover{color:var(--ac);transform:translateX(4px)}
+.ft-link:hover::after{width:100%}
+.ft-social{width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:var(--gl);border:1.5px solid var(--bd);color:var(--m);transition:all .4s cubic-bezier(.23,1,.32,1);position:relative;overflow:hidden}
+.ft-social::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--rose),var(--ac));opacity:0;transition:opacity .4s}
+.ft-social:hover{border-color:var(--ac);color:#fff;transform:translateY(-4px) scale(1.1);box-shadow:0 10px 25px var(--sh)}
+.ft-social:hover::before{opacity:1}
+.ft-social i{position:relative;z-index:2;font-size:.8rem}
+
+/* SECTION LABEL */
+.sec-label{font-size:.72rem;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--ac2);margin-bottom:1rem;display:inline-flex;align-items:center;gap:.8rem}
+.sec-label::before,.sec-label::after{content:'';width:24px;height:1px;background:linear-gradient(90deg,var(--ac2),transparent)}
+.sec-label::after{background:linear-gradient(-90deg,var(--ac2),transparent)}
+
+/* HERO BADGE */
+.hero-badge{display:inline-flex;align-items:center;gap:.6rem;padding:.5rem 1.4rem;border-radius:50px;background:var(--gl);border:1.5px solid var(--bd);backdrop-filter:blur(20px);transition:all .4s}
+.hero-badge:hover{border-color:var(--bd2);transform:translateY(-2px);box-shadow:0 8px 25px rgba(199,56,109,.1)}
+
+/* MAGNETIC */
+.mag{transition:transform .3s cubic-bezier(.23,1,.32,1);will-change:transform}
+
+/* RESPONSIVE */
+@media(max-width:1024px){.g4{grid-template-columns:repeat(2,1fr)!important}.g3{grid-template-columns:repeat(2,1fr)!important}.hero-g{grid-template-columns:1fr!important;text-align:center}.hero-cta{justify-content:center!important}.hero-stats{justify-content:center!important}.hero-3d{display:none!important}.qv-c .hero-g{grid-template-columns:1fr!important}}
+@media(max-width:640px){.g4,.g3,.g2{grid-template-columns:1fr!important}.stc-g{grid-template-columns:repeat(2,1fr)!important}.nav-links{display:none!important}.hero-t{font-size:2.6rem!important}.catc-h{height:240px!important}.col-h{height:320px!important}.cur,.cur-d{display:none!important}body{cursor:auto!important}a,button,.catc,.c3d{cursor:pointer!important}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;animation-iteration-count:1!important}}
+
+@keyframes cBounce{0%{transform:scale(1)}30%{transform:scale(1.4)}50%{transform:scale(.9)}70%{transform:scale(1.15)}100%{transform:scale(1)}}
+@keyframes sparkleFloat{0%,100%{transform:translateY(0) rotate(0deg);opacity:0}25%{opacity:1}50%{transform:translateY(-20px) rotate(180deg);opacity:.6}75%{opacity:1}}
+</style>
+</head>
+<body>
+
+<!-- LOADER -->
+<div id="loader">
+  <div style="text-align:center">
+    <div class="ld-l">
+      <span class="glow-char" style="--d:.1s">A</span><span class="glow-char" style="--d:.2s">j</span><span class="glow-char" style="--d:.3s">i</span><span class="glow-char" style="--d:.4s">n</span><span class="glow-char" style="--d:.5s">a</span><span style="--d:.7s;color:var(--fg)">Shop</span>
+    </div>
+    <div class="ld-sub">Curating Beauty Since 2025</div>
+    <div class="ld-bar"><div class="ld-fill"></div></div>
+  </div>
+</div>
+
+<!-- CURSOR -->
+<div class="cur" id="cur"></div>
+<div class="cur-d" id="curD"></div>
+<div id="scProg"></div>
+<div id="grain"></div>
+
+<!-- BLOBS -->
+<div class="bg-fx" aria-hidden="true">
+  <div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div><div class="blob b4"></div>
+</div>
+<canvas id="ptcC" aria-hidden="true"></canvas>
+
+<!-- TOAST -->
+<div class="toast" id="toast" role="alert"><div class="toast-ic"><i class="fas fa-check"></i></div><span id="tMsg"></span></div>
+
+<!-- CART MODAL -->
+<div class="mo" id="cartMo" role="dialog" aria-label="Shopping cart">
+  <div class="mo-b">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem">
+      <h3 style="font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:800">Your Cart</h3>
+      <button onclick="toggleCart()" style="background:0;color:var(--m);font-size:1.3rem;padding:6px;border-radius:10px;transition:all .3s" onmouseover="this.style.color='var(--ac)'" onmouseout="this.style.color='var(--m)'"><i class="fas fa-times"></i></button>
+    </div>
+    <div id="cartL" style="max-height:320px;overflow-y:auto;padding-right:8px"></div>
+    <div style="border-top:1.5px solid var(--bd);padding-top:1.2rem;margin-top:1.2rem">
+      <div style="display:flex;justify-content:space-between;margin-bottom:.6rem"><span style="color:var(--m);font-size:.9rem">Subtotal</span><span id="cartT" style="color:var(--ac2);font-weight:800;font-size:1.1rem;font-family:'Playfair Display',serif">$0.00</span></div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:1.2rem"><span style="color:var(--m);font-size:.85rem">Shipping</span><span style="color:var(--fg2);font-size:.85rem">Calculated at checkout</span></div>
+      <button class="btn-r" style="width:100%;padding:1rem;border-radius:16px;font-size:.9rem" onclick="checkout()"><span>Proceed to Checkout</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- QUICK VIEW -->
+<div class="qv" id="qvOv" role="dialog" aria-label="Product details">
+  <div class="qv-c" id="qvC"></div>
+</div>
+
+<!-- NAV -->
+<nav class="nav" id="nav">
+  <div class="nav-in">
+    <a href="#hero" class="mag" style="display:flex;align-items:center;gap:.7rem">
+      <div style="width:40px;height:40px;border-radius:14px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--rose),var(--ac));box-shadow:0 4px 15px var(--sh)"><i class="fas fa-gem" style="color:#fff;font-size:.85rem"></i></div>
+      <span style="font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:900"><span class="glow">Ajina</span><span style="color:var(--fg)">Shop</span></span>
+    </a>
+    <div class="nav-links" style="display:flex;gap:2.5rem;align-items:center">
+      <a href="#hero" class="nav-link mag"><i class="fas fa-home"></i>Home</a>
+      <a href="#cats" class="nav-link mag"><i class="fas fa-th-large"></i>Categories</a>
+      <a href="#trend" class="nav-link mag"><i class="fas fa-fire"></i>Trending</a>
+      <a href="#cols" class="nav-link mag"><i class="fas fa-layer-group"></i>Collections</a>
+      <a href="#testimonials" class="nav-link mag"><i class="fas fa-comment-alt"></i>Reviews</a>
+    </div>
+    <div style="display:flex;align-items:center;gap:.6rem">
+      <button onclick="toggleSearch()" class="mag" style="width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:var(--gl);border:1.5px solid var(--bd);color:var(--m);font-size:.9rem;transition:all .4s" onmouseover="this.style.color='var(--ac)';this.style.borderColor='var(--bd2)';this.style.transform='scale(1.1)'" onmouseout="this.style.color='var(--m)';this.style.borderColor='var(--bd)';this.style.transform=''" aria-label="Search"><i class="fas fa-search"></i></button>
+      <button id="wBtn" onclick="showWish()" class="mag" style="width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:var(--gl);border:1.5px solid var(--bd);color:var(--m);font-size:.9rem;transition:all .4s;position:relative" onmouseover="this.style.color='var(--rose)';this.style.borderColor='var(--bd2)';this.style.transform='scale(1.1)'" onmouseout="this.style.color='var(--m)';this.style.borderColor='var(--bd)';this.style.transform=''" aria-label="Wishlist">
+        <i class="fas fa-heart"></i>
+        <span id="wB" style="display:none;position:absolute;top:-5px;right:-5px;min-width:18px;height:18px;border-radius:9px;background:var(--rose);color:#fff;font-size:9px;font-weight:800;align-items:center;justify-content:center;padding:0 5px;box-shadow:0 2px 8px var(--sh)">0</span>
+      </button>
+      <button onclick="toggleCart()" id="cBtn" class="mag" style="width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:var(--gl);border:1.5px solid var(--bd);color:var(--m);font-size:.9rem;transition:all .4s;position:relative" onmouseover="this.style.color='var(--ac)';this.style.borderColor='var(--bd2)';this.style.transform='scale(1.1)'" onmouseout="this.style.color='var(--m)';this.style.borderColor='var(--bd)';this.style.transform=''" aria-label="Cart">
+        <i class="fas fa-shopping-bag"></i>
+        <span id="cB" style="display:none;position:absolute;top:-5px;right:-5px;min-width:18px;height:18px;border-radius:9px;background:var(--rose);color:#fff;font-size:9px;font-weight:800;align-items:center;justify-content:center;padding:0 5px;box-shadow:0 2px 8px var(--sh)">0</span>
+      </button>
+    </div>
+  </div>
+  <div id="sBox" style="max-height:0;overflow:hidden;transition:max-height .5s cubic-bezier(.23,1,.32,1);max-width:1400px;margin:0 auto;padding:0 2rem">
+    <div style="padding-bottom:1.2rem">
+      <div style="position:relative">
+        <i class="fas fa-search" style="position:absolute;left:1.2rem;top:50%;transform:translateY(-50%);color:var(--m);font-size:.85rem"></i>
+        <input type="text" id="sIn" placeholder="Search makeup, clothing, skincare, accessories..." oninput="doSearch(this.value)" style="width:100%;padding:.85rem 1.2rem .85rem 2.8rem;border-radius:16px;background:var(--gl);border:1.5px solid var(--bd);color:var(--fg);font-size:.9rem;outline:none;transition:all .4s;font-family:'Quicksand',sans-serif" onfocus="this.style.borderColor='var(--ac)';this.style.boxShadow='0 0 30px rgba(232,160,191,.1)'" onblur="this.style.borderColor='var(--bd)';this.style.boxShadow='none'" aria-label="Search products">
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- BACK TO TOP -->
+<button id="btt" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Back to top"><i class="fas fa-chevron-up"></i></button>
+
+<main style="position:relative;z-index:2">
+
+<!-- HERO -->
+<section id="hero" style="min-height:100vh;display:flex;align-items:center;padding-top:6rem;position:relative;overflow:hidden">
+  <div style="position:absolute;top:10%;left:5%;width:12px;height:12px;opacity:.3;animation:sparkleFloat 5s ease-in-out infinite .5s"><svg viewBox="0 0 24 24" fill="var(--ac2)"><path d="M12 0L14.59 9.41L24 12L14.59 14.59L12 24L9.41 14.59L0 12L9.41 9.41L12 0Z"/></svg></div>
+  <div style="position:absolute;top:25%;right:8%;width:16px;height:16px;opacity:.2;animation:sparkleFloat 6s ease-in-out infinite 1s"><svg viewBox="0 0 24 24" fill="var(--ac)"><path d="M12 0L14.59 9.41L24 12L14.59 14.59L12 24L9.41 14.59L0 12L9.41 9.41L12 0Z"/></svg></div>
+  <div style="position:absolute;bottom:20%;left:8%;width:10px;height:10px;opacity:.25;animation:sparkleFloat 4s ease-in-out infinite 2s"><svg viewBox="0 0 24 24" fill="var(--rose2)"><path d="M12 0L14.59 9.41L24 12L14.59 14.59L12 24L9.41 14.59L0 12L9.41 9.41L12 0Z"/></svg></div>
+
+  <div class="hero-g" style="max-width:1400px;margin:0 auto;padding:0 2rem;display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center;width:100%;position:relative;z-index:5">
+    <div class="rv">
+      <div class="hero-badge" style="margin-bottom:2rem">
+        <span class="pls" style="width:8px;height:8px;border-radius:50%;background:var(--ac2);display:block"></span>
+        <span style="font-size:.78rem;font-weight:700;color:var(--ac2);letter-spacing:1px">New Season 2025 Collection</span>
+      </div>
+      <h1 class="hero-t" style="font-family:'Playfair Display',serif;font-size:4.8rem;font-weight:900;line-height:1.05;margin-bottom:1.8rem;letter-spacing:-1px">
+        Discover Your<br>
+        <span class="glow" style="display:inline-block">Glamorous</span><br>
+        <span style="color:var(--fg2)">Beauty</span>
+      </h1>
+      <p style="color:var(--m);font-size:1.1rem;line-height:1.8;margin-bottom:2.5rem;max-width:460px;font-weight:400">
+        Premium makeup, luxury clothing, and skincare curated for the modern woman who dares to shine. Experience elegance redefined.
+      </p>
+      <div class="hero-cta" style="display:flex;flex-wrap:wrap;gap:1.2rem;margin-bottom:3rem">
+        <a href="#trend" class="btn-r mag" style="padding:1rem 2.4rem;border-radius:18px;font-size:.95rem" onclick="addRip(event,this)"><span>Shop Now <i class="fas fa-arrow-right" style="margin-left:.4rem"></i></span></a>
+        <a href="#cats" class="btn-o mag" style="padding:1rem 2.4rem;border-radius:18px;font-size:.95rem" onclick="addRip(event,this)"><span>Explore <i class="fas fa-eye" style="margin-left:.4rem"></i></span></a>
+      </div>
+      <div class="hero-stats" style="display:flex;align-items:center;gap:2.5rem">
+        <div class="rv-s" style="transition-delay:.2s"><div style="font-size:1.8rem;font-weight:900;color:var(--ac2);font-family:'Playfair Display',serif" id="hs1">0</div><div style="font-size:.78rem;color:var(--m);margin-top:.2rem">Happy Clients</div></div>
+        <div style="width:1px;height:44px;background:linear-gradient(to bottom,transparent,var(--bd2),transparent)"></div>
+        <div class="rv-s" style="transition-delay:.3s"><div style="font-size:1.8rem;font-weight:900;color:var(--ac2);font-family:'Playfair Display',serif" id="hs2">0</div><div style="font-size:.78rem;color:var(--m);margin-top:.2rem">Products</div></div>
+        <div style="width:1px;height:44px;background:linear-gradient(to bottom,transparent,var(--bd2),transparent)"></div>
+        <div class="rv-s" style="transition-delay:.4s"><div style="font-size:1.8rem;font-weight:900;color:var(--ac2);font-family:'Playfair Display',serif">4.9</div><div style="font-size:.78rem;color:var(--m);margin-top:.2rem">Rating</div></div>
+      </div>
+    </div>
+    <div class="hero-3d" style="display:flex;align-items:center;justify-content:center;position:relative;perspective:1400px;min-height:500px">
+      <div class="spr" style="position:absolute;width:420px;height:420px;border-radius:50%;border:1px dashed rgba(232,160,191,.12)" aria-hidden="true"></div>
+      <div class="spr-rev" style="position:absolute;width:360px;height:360px;border-radius:50%;border:1px dashed rgba(212,175,55,.08)" aria-hidden="true"></div>
+      <div class="hf" style="position:relative;z-index:5;width:320px;height:480px;border-radius:32px;overflow:hidden;box-shadow:0 60px 120px var(--sh),0 0 80px rgba(199,56,109,.15);border:1.5px solid var(--bd2);transform-style:preserve-3d">
+        <img src="https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=450&h=650&fit=crop" alt="Glamorous beauty" style="width:100%;height:100%;object-fit:cover">
+        <div style="position:absolute;inset:0;background:linear-gradient(to top,var(--bg),transparent 55%)"></div>
+        <div style="position:absolute;bottom:2rem;left:2rem;right:2rem">
+          <div style="font-size:.75rem;font-weight:700;color:var(--ac2);letter-spacing:2px;text-transform:uppercase;margin-bottom:.4rem">Featured Collection</div>
+          <div style="font-family:'Playfair Display',serif;font-weight:800;font-size:1.2rem">Velvet Rose Edition</div>
+        </div>
+      </div>
+      <div class="hf2" style="position:absolute;top:-20px;right:0;z-index:6;width:110px;height:110px;border-radius:22px;overflow:hidden;box-shadow:0 25px 60px rgba(0,0,0,.6);border:1.5px solid var(--bd2);animation-delay:-1s">
+        <img src="https://images.unsplash.com/photo-1586495777744-4413f21062fa?w=160&h=160&fit=crop" alt="Red lipstick" style="width:100%;height:100%;object-fit:cover">
+      </div>
+      <div class="hf3" style="position:absolute;bottom:40px;left:-10px;z-index:6;display:flex;align-items:center;gap:.7rem;padding:.8rem 1rem;border-radius:18px;background:var(--card);border:1.5px solid var(--bd2);box-shadow:0 25px 60px rgba(0,0,0,.5);backdrop-filter:blur(20px);animation-delay:-2s">
+        <div style="width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--rose),var(--ac));flex-shrink:0;box-shadow:0 4px 15px var(--sh)"><i class="fas fa-fire" style="color:#fff;font-size:.8rem"></i></div>
+        <div><div style="font-size:.8rem;font-weight:800">Trending Now</div><div style="font-size:.7rem;color:var(--ac2);font-weight:600">+342 this week</div></div>
+      </div>
+      <div class="hf2" style="position:absolute;top:45%;right:-30px;z-index:6;width:90px;height:90px;border-radius:20px;overflow:hidden;box-shadow:0 20px 50px rgba(0,0,0,.5);border:1.5px solid var(--bd2);animation-delay:-3s">
+        <img src="https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=120&h=120&fit=crop" alt="Gold necklace" style="width:100%;height:100%;object-fit:cover">
+      </div>
+      <div class="hf3" style="position:absolute;top:15%;left:-20px;z-index:6;width:70px;height:70px;border-radius:16px;overflow:hidden;box-shadow:0 15px 40px rgba(0,0,0,.4);border:1.5px solid var(--bd2);animation-delay:-4s">
+        <img src="https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=100&h=100&fit=crop" alt="Makeup palette" style="width:100%;height:100%;object-fit:cover">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<section style="padding:1.5rem 0;border-top:1.5px solid var(--bd);border-bottom:1.5px solid var(--bd);position:relative">
+  <div class="mq-wrap">
+    <div class="mq">
+      <span class="mq-item">Chanel</span><span class="mq-sep">&#9830;</span>
+      <span class="mq-item">Dior</span><span class="mq-sep">&#9830;</span>
+      <span class="mq-item">MAC</span><span class="mq-sep">&#9830;</span>
+      <span class="mq-item">Fenty Beauty</span><span class="mq-sep">&#9830;</span>
+      <span class="mq-item">NARS</span><span class="mq-sep">&#9830;</span>
+      <span class="mq-item">Huda Beauty</span><span class="mq-sep">&#9830;</span>
+      <span class="mq-item">Anastasia</span><span class="mq-sep">&#9830;</span>
+      <span class="mq-item">Too Faced</span><span class="mq-sep">&#9830;</span>
+      <span class="mq-item">Charlotte Tilbury</span><span class="mq-sep">&#9830;</span>
+      <span class="mq-item">YSL</span><span class="mq-sep">&#9830;</span>
+      <span class="mq-item">Pat McGrath</span><span class="mq-sep">&#9830;</span>
+      <span class="mq-item">Tom Ford</span><span class="mq-sep">&#9830;</span>
+      <span class="mq-item">Chanel</span><span class="mq-sep">&#9830;</span>
+      <span class="mq-item">Dior</span><span class="mq-sep">&#9830;</span>
+      <span class="mq-item">MAC</span><span class="mq-sep">&#9830;</span>
+      <span class="mq-item">Fenty Beauty</span><span class="mq-sep">&#9830;</span>
+      <span class="mq-item">NARS</span><span class="mq-sep">&#9830;</span>
+      <span class="mq-item">Huda Beauty</span><span class="mq-sep">&#9830;</span>
+      <span class="mq-item">Anastasia</span><span class="mq-sep">&#9830;</span>
+      <span class="mq-item">Too Faced</span><span class="mq-sep">&#9830;</span>
+      <span class="mq-item">Charlotte Tilbury</span><span class="mq-sep">&#9830;</span>
+      <span class="mq-item">YSL</span><span class="mq-sep">&#9830;</span>
+      <span class="mq-item">Pat McGrath</span><span class="mq-sep">&#9830;</span>
+      <span class="mq-item">Tom Ford</span><span class="mq-sep">&#9830;</span>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section style="padding:5rem 0" id="stSec">
+  <div class="stc-g" style="max-width:1400px;margin:0 auto;padding:0 2rem;display:grid;grid-template-columns:repeat(4,1fr);gap:1.2rem">
+    <div class="stc rv" style="padding:1.8rem">
+      <div class="stc-ic" style="background:rgba(199,56,109,.15)"><i class="fas fa-shopping-bag" style="color:var(--rose);font-size:1.1rem"></i></div>
+      <div id="s1" style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:800;margin-bottom:.3rem">0</div>
+      <div style="font-size:.85rem;color:var(--m)">Total Orders</div>
+    </div>
+    <div class="stc rv" style="padding:1.8rem">
+      <div class="stc-ic" style="background:rgba(212,175,55,.15)"><i class="fas fa-star" style="color:var(--ac2);font-size:1.1rem"></i></div>
+      <div id="s2" style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:800;margin-bottom:.3rem">0</div>
+      <div style="font-size:.85rem;color:var(--m)">Top Rated</div>
+    </div>
+    <div class="stc rv" style="padding:1.8rem">
+      <div class="stc-ic" style="background:rgba(232,160,191,.15)"><i class="fas fa-heart" style="color:var(--ac);font-size:1.1rem"></i></div>
+      <div id="s3" style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:800;margin-bottom:.3rem">0</div>
+      <div style="font-size:.85rem;color:var(--m)">Wishlisted</div>
+    </div>
+    <div class="stc rv" style="padding:1.8rem">
+      <div class="stc-ic" style="background:rgba(139,34,82,.2)"><i class="fas fa-gem" style="color:#C9A0DC;font-size:1.1rem"></i></div>
+      <div id="s4" style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:800;margin-bottom:.3rem">0</div>
+      <div style="font-size:.85rem;color:var(--m)">Collections</div>
+    </div>
+  </div>
+</section>
+
+<!-- CATEGORIES -->
+<section id="cats" style="padding:5rem 0">
+  <div style="max-width:1400px;margin:0 auto;padding:0 2rem">
+    <div class="rv" style="text-align:center;margin-bottom:3.5rem">
+      <div class="sec-label" style="justify-content:center">Browse</div>
+      <h2 style="font-family:'Playfair Display',serif;font-size:3rem;font-weight:900">Shop by <span class="glow">Category</span></h2>
+    </div>
+    <div class="g4" style="display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem">
+      <div class="catc rv catc-h" style="height:340px" onclick="goCat('makeup')">
+        <img src="https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=400&h=500&fit=crop" alt="Makeup" style="width:100%;height:100%;object-fit:cover">
+        <div class="catc-info">
+          <div class="catc-ic"><i class="fas fa-paint-brush" style="color:var(--ac);font-size:1rem"></i></div>
+          <h3 style="font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;margin-bottom:.3rem">Makeup</h3>
+          <p style="font-size:.8rem;color:var(--m)">128 Products</p>
+        </div>
+      </div>
+      <div class="catc rv catc-h" style="height:340px" onclick="goCat('clothing')">
+        <img src="https://images.unsplash.com/photo-1445205170230-053b83016050?w=400&h=500&fit=crop" alt="Clothing" style="width:100%;height:100%;object-fit:cover">
+        <div class="catc-info">
+          <div class="catc-ic"><i class="fas fa-tshirt" style="color:var(--ac2);font-size:1rem"></i></div>
+          <h3 style="font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;margin-bottom:.3rem">Clothing</h3>
+          <p style="font-size:.8rem;color:var(--m)">96 Products</p>
+        </div>
+      </div>
+      <div class="catc rv catc-h" style="height:340px" onclick="goCat('skincare')">
+        <img src="https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=400&h=500&fit=crop" alt="Skincare" style="width:100%;height:100%;object-fit:cover">
+        <div class="catc-info">
+          <div class="catc-ic"><i class="fas fa-spa" style="color:var(--ac);font-size:1rem"></i></div>
+          <h3 style="font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;margin-bottom:.3rem">Skincare</h3>
+          <p style="font-size:.8rem;color:var(--m)">74 Products</p>
+        </div>
+      </div>
+      <div class="catc rv catc-h" style="height:340px" onclick="goCat('accessories')">
+        <img src="https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=400&h=500&fit=crop" alt="Accessories" style="width:100%;height:100%;object-fit:cover">
+        <div class="catc-info">
+          <div class="catc-ic"><i class="fas fa-gem" style="color:#C9A0DC;font-size:1rem"></i></div>
+          <h3 style="font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;margin-bottom:.3rem">Accessories</h3>
+          <p style="font-size:.8rem;color:var(--m)">52 Products</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRENDING -->
+<section id="trend" style="padding:5rem 0">
+  <div style="max-width:1400px;margin:0 auto;padding:0 2rem">
+    <div style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:1.5rem;margin-bottom:3rem">
+      <div class="rv">
+        <div class="sec-label">Hot Right Now</div>
+        <h2 style="font-family:'Playfair Display',serif;font-size:3rem;font-weight:900">Trending <span class="glow">Picks</span></h2>
+      </div>
+      <div class="rv" style="position:relative;display:flex;flex-wrap:wrap;gap:.6rem" id="tabsW">
+        <button class="tb on" data-t="all" onclick="switchTab('all',this)">All</button>
+        <button class="tb" data-t="makeup" onclick="switchTab('makeup',this)">Makeup</button>
+        <button class="tb" data-t="clothing" onclick="switchTab('clothing',this)">Clothing</button>
+        <button class="tb" data-t="skincare" onclick="switchTab('skincare',this)">Skincare</button>
+        <button class="tb" data-t="accessories" onclick="switchTab('accessories',this)">Accessories</button>
+        <div class="tab-line" id="tabLine"></div>
+      </div>
+    </div>
+    <div id="pG" class="g4" style="display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem"></div>
+  </div>
+</section>
+
+<!-- SALE BANNER -->
+<section style="padding:5rem 0">
+  <div style="max-width:1400px;margin:0 auto;padding:0 2rem">
+    <div class="rv" style="border-radius:32px;overflow:hidden;position:relative;background:linear-gradient(135deg,#2D0A1E,#1A0A12);border:1.5px solid var(--bd2)">
+      <div style="position:absolute;top:0;right:0;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(199,56,109,.2),transparent 70%);transform:translate(30%,-30%)"></div>
+      <div style="position:absolute;bottom:0;left:0;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(212,175,55,.12),transparent 70%);transform:translate(-20%,30%)"></div>
+      <div class="hero-g" style="display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center;position:relative;z-index:5;padding:4rem 3rem">
+        <div>
+          <div style="display:inline-flex;align-items:center;gap:.5rem;padding:.5rem 1.2rem;border-radius:50px;margin-bottom:1.2rem;background:rgba(199,56,109,.2);border:1.5px solid rgba(199,56,109,.3)">
+            <i class="fas fa-bolt" style="color:var(--ac2)"></i>
+            <span style="font-size:.78rem;font-weight:800;color:var(--ac2)">Limited Time Offer</span>
+          </div>
+          <h2 style="font-family:'Playfair Display',serif;font-size:3.2rem;font-weight:900;margin-bottom:1.2rem">Up to <span class="glow">40% Off</span></h2>
+          <p style="color:var(--m);margin-bottom:2rem;max-width:420px;line-height:1.7">Exclusive deals on premium beauty bundles. Curated for every skin type and style. Don't miss out on these luxury essentials.</p>
+          <div style="display:flex;gap:.8rem;margin-bottom:2rem;align-items:center">
+            <div class="cd-box"><div class="cd-num" id="cdD">02</div><div class="cd-lbl">Days</div></div>
+            <div class="cd-sep">:</div>
+            <div class="cd-box"><div class="cd-num" id="cdH">14</div><div class="cd-lbl">Hours</div></div>
+            <div class="cd-sep">:</div>
+            <div class="cd-box"><div class="cd-num" id="cdM">36</div><div class="cd-lbl">Mins</div></div>
+            <div class="cd-sep">:</div>
+            <div class="cd-box"><div class="cd-num" id="cdS">00</div><div class="cd-lbl">Secs</div></div>
+          </div>
+          <button class="btn-r mag" style="padding:1rem 2.2rem;border-radius:18px;font-size:.9rem" onclick="addRip(event,this);toast('Sale items highlighted!')"><span>Shop the Sale <i class="fas fa-arrow-right" style="margin-left:.4rem"></i></span></button>
+        </div>
+        <div style="display:flex;justify-content:center">
+          <div class="hf2" style="position:relative;width:300px;height:300px;border-radius:28px;overflow:hidden;box-shadow:0 35px 70px var(--sh)">
+            <img src="https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=400&h=400&fit=crop" alt="Beauty sale" style="width:100%;height:100%;object-fit:cover">
+            <div style="position:absolute;top:1.2rem;right:1.2rem;padding:.5rem 1rem;border-radius:14px;font-size:.9rem;font-weight:800;color:#fff;background:var(--rose);box-shadow:0 4px 15px var(--sh)">-40%</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COLLECTIONS -->
+<section id="cols" style="padding:5rem 0">
+  <div style="max-width:1400px;margin:0 auto;padding:0 2rem">
+    <div class="rv" style="text-align:center;margin-bottom:3.5rem">
+      <div class="sec-label" style="justify-content:center">Curated For You</div>
+      <h2 style="font-family:'Playfair Display',serif;font-size:3rem;font-weight:900">Exclusive <span class="glow">Collections</span></h2>
+    </div>
+    <div class="g3" style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem">
+      <div class="catc rv col-h" style="height:440px">
+        <img src="https://images.unsplash.com/photo-1519699047748-de8e457a634e?w=500&h=600&fit=crop" alt="Evening glam" style="width:100%;height:100%;object-fit:cover">
+        <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(6,2,6,.95),rgba(6,2,6,.1) 50%);z-index:2"></div>
+        <div style="position:absolute;bottom:2.5rem;left:2.5rem;right:2.5rem;z-index:3">
+          <div style="font-size:.72rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--ac2);margin-bottom:.6rem">12 Items</div>
+          <h3 style="font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:800;margin-bottom:.6rem">Evening Glam</h3>
+          <p style="font-size:.85rem;color:var(--m);margin-bottom:1.2rem;line-height:1.6">Bold looks for unforgettable nights</p>
+          <span class="btn-o mag" style="padding:.6rem 1.4rem;border-radius:14px;font-size:.8rem;display:inline-block" onclick="addRip(event,this)"><span>View Collection <i class="fas fa-arrow-right" style="margin-left:.3rem"></i></span></span>
+        </div>
+      </div>
+      <div class="catc rv col-h" style="height:440px">
+        <img src="https://images.unsplash.com/photo-1492707892479-7bc8d5a4ee93?w=500&h=600&fit=crop" alt="Everyday glow" style="width:100%;height:100%;object-fit:cover">
+        <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(6,2,6,.95),rgba(6,2,6,.1) 50%);z-index:2"></div>
+        <div style="position:absolute;bottom:2.5rem;left:2.5rem;right:2.5rem;z-index:3">
+          <div style="font-size:.72rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--ac2);margin-bottom:.6rem">18 Items</div>
+          <h3 style="font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:800;margin-bottom:.6rem">Everyday Glow</h3>
+          <p style="font-size:.85rem;color:var(--m);margin-bottom:1.2rem;line-height:1.6">Effortless beauty for every day</p>
+          <span class="btn-o mag" style="padding:.6rem 1.4rem;border-radius:14px;font-size:.8rem;display:inline-block" onclick="addRip(event,this)"><span>View Collection <i class="fas fa-arrow-right" style="margin-left:.3rem"></i></span></span>
+        </div>
+      </div>
+      <div class="catc rv col-h" style="height:440px">
+        <img src="https://images.unsplash.com/photo-1523263685509-7085fde55519?w=500&h=600&fit=crop" alt="Bridal suite" style="width:100%;height:100%;object-fit:cover">
+        <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(6,2,6,.95),rgba(6,2,6,.1) 50%);z-index:2"></div>
+        <div style="position:absolute;bottom:2.5rem;left:2.5rem;right:2.5rem;z-index:3">
+          <div style="font-size:.72rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--ac2);margin-bottom:.6rem">8 Items</div>
+          <h3 style="font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:800;margin-bottom:.6rem">Bridal Suite</h3>
+          <p style="font-size:.85rem;color:var(--m);margin-bottom:1.2rem;line-height:1.6">Perfect day, perfectly adorned</p>
+          <span class="btn-o mag" style="padding:.6rem 1.4rem;border-radius:14px;font-size:.8rem;display:inline-block" onclick="addRip(event,this)"><span>View Collection <i class="fas fa-arrow-right" style="margin-left:.3rem"></i></span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="testimonials" style="padding:5rem 0">
+  <div style="max-width:1400px;margin:0 auto;padding:0 2rem">
+    <div class="rv" style="text-align:center;margin-bottom:3.5rem">
+      <div class="sec-label" style="justify-content:center">Love Letters</div>
+      <h2 style="font-family:'Playfair Display',serif;font-size:3rem;font-weight:900">What Our <span class="glow">Clients</span> Say</h2>
+    </div>
+    <div class="g3" style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem">
+      <div class="rv t-card shm">
+        <div class="t-stars"><i class="fas fa-star s1" style="font-size:.75rem"></i><i class="fas fa-star s1" style="font-size:.75rem"></i><i class="fas fa-star s1" style="font-size:.75rem"></i><i class="fas fa-star s1" style="font-size:.75rem"></i><i class="fas fa-star s1" style="font-size:.75rem"></i></div>
+        <p style="font-size:.9rem;line-height:1.8;color:var(--m);margin-bottom:1.8rem">"AjinaShop completely transformed my beauty routine. The quality of their curated products is unmatched. I feel confident and radiant every single day."</p>
+        <div style="display:flex;align-items:center;gap:1rem">
+          <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&h=80&fit=crop" alt="Sara" class="t-avatar">
+          <div><div style="font-size:.9rem;font-weight:700">Sara Al-Rashid</div><div style="font-size:.75rem;color:var(--ac2)">VIP Member</div></div>
+        </div>
+      </div>
+      <div class="rv t-card shm" style="transition-delay:.1s">
+        <div class="t-stars"><i class="fas fa-star s1" style="font-size:.75rem"></i><i class="fas fa-star s1" style="font-size:.75rem"></i><i class="fas fa-star s1" style="font-size:.75rem"></i><i class="fas fa-star s1" style="font-size:.75rem"></i><i class="fas fa-star s1" style="font-size:.75rem"></i></div>
+        <p style="font-size:.9rem;line-height:1.8;color:var(--m);margin-bottom:1.8rem">"The clothing collection is absolutely stunning. Every piece feels luxurious and fits perfectly. Customer service is world-class and delivery is lightning fast."</p>
+        <div style="display:flex;align-items:center;gap:1rem">
+          <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=80&h=80&fit=crop" alt="Lina" class="t-avatar">
+          <div><div style="font-size:.9rem;font-weight:700">Lina Moreau</div><div style="font-size:.75rem;color:var(--ac2)">Verified Buyer</div></div>
+        </div>
+      </div>
+      <div class="rv t-card shm" style="transition-delay:.2s">
+        <div class="t-stars"><i class="fas fa-star s1" style="font-size:.75rem"></i><i class="fas fa-star s1" style="font-size:.75rem"></i><i class="fas fa-star s1" style="font-size:.75rem"></i><i class="fas fa-star s1" style="font-size:.75rem"></i><i class="fas fa-star s0" style="font-size:.75rem"></i></div>
+        <p style="font-size:.9rem;line-height:1.8;color:var(--m);margin-bottom:1.8rem">"I've tried countless skincare brands, but AjinaShop's selection delivers real results. My skin has never looked this good. Truly a game-changer."</p>
+        <div style="display:flex;align-items:center;gap:1rem">
+          <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=80&h=80&fit=crop" alt="Amira" class="t-avatar">
+          <div><div style="font-size:.9rem;font-weight:700">Amira Chen</div><div style="font-size:.75rem;color:var(--ac2)">Beauty Blogger</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- NEWSLETTER -->
+<section style="padding:5rem 0">
+  <div style="max-width:1400px;margin:0 auto;padding:0 2rem">
+    <div class="rv nl-wrap">
+      <div style="position:relative;z-index:5">
+        <h2 style="font-family:'Playfair Display',serif;font-size:2.4rem;font-weight:900;margin-bottom:1rem">Join the <span class="glow">AjinaShop</span> Club</h2>
+        <p style="color:var(--m);margin-bottom:2.5rem;max-width:480px;margin-left:auto;margin-right:auto;line-height:1.7">Get exclusive early access, member-only deals, and beauty tips delivered straight to your inbox.</p>
+        <div style="display:flex;gap:.8rem;max-width:460px;margin:0 auto;flex-wrap:wrap;justify-content:center">
+          <input type="email" id="emIn" placeholder="Your email address" class="nl-input" aria-label="Email">
+          <button class="btn-r mag" style="padding:.85rem 1.8rem;border-radius:16px;font-size:.9rem;white-space:nowrap" onclick="addRip(event,this);subscribe()"><span>Subscribe</span></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- FOOTER -->
+<footer style="position:relative;z-index:2;padding:5rem 0 2rem;border-top:1.5px solid var(--bd)">
+  <div style="max-width:1400px;margin:0 auto;padding:0 2rem">
+    <div class="g4" style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:3rem;margin-bottom:4rem">
+      <div>
+        <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:1.2rem">
+          <div style="width:36px;height:36px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--rose),var(--ac));box-shadow:0 4px 15px var(--sh)"><i class="fas fa-gem" style="color:#fff;font-size:.75rem"></i></div>
+          <span style="font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:800">AjinaShop</span>
+        </div>
+        <p style="font-size:.85rem;line-height:1.8;color:var(--m);margin-bottom:1.5rem">Premium beauty and fashion destination for the modern woman. Curating the world's finest products since 2025.</p>
+        <div style="display:flex;gap:.6rem">
+          <a href="#" class="ft-social" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+          <a href="#" class="ft-social" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+          <a href="#" class="ft-social" aria-label="Pinterest"><i class="fab fa-pinterest"></i></a>
+          <a href="#" class="ft-social" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+        </div>
+      </div>
+      <div>
+        <h4 style="font-weight:800;font-size:.9rem;margin-bottom:1.2rem;color:var(--fg)">Shop</h4>
+        <div style="display:flex;flex-direction:column;gap:.7rem">
+          <a href="#cats" class="ft-link">Makeup</a>
+          <a href="#cats" class="ft-link">Clothing</a>
+          <a href="#cats" class="ft-link">Skincare</a>
+          <a href="#cats" class="ft-link">Accessories</a>
+          <a href="#trend" class="ft-link">New Arrivals</a>
+        </div>
+      </div>
+      <div>
+        <h4 style="font-weight:800;font-size:.9rem;margin-bottom:1.2rem;color:var(--fg)">Company</h4>
+        <div style="display:flex;flex-direction:column;gap:.7rem">
+          <a href="#" class="ft-link">About Us</a>
+          <a href="#" class="ft-link">Careers</a>
+          <a href="#" class="ft-link">Press</a>
+          <a href="#" class="ft-link">Blog</a>
+          <a href="#" class="ft-link">Sustainability</a>
+        </div>
+      </div>
+      <div>
+        <h4 style="font-weight:800;font-size:.9rem;margin-bottom:1.2rem;color:var(--fg)">Support</h4>
+        <div style="display:flex;flex-direction:column;gap:.7rem">
+          <a href="#" class="ft-link">Help Center</a>
+          <a href="#" class="ft-link">Shipping Info</a>
+          <a href="#" class="ft-link">Returns</a>
+          <a href="#" class="ft-link">Contact Us</a>
+          <a href="#" class="ft-link">FAQ</a>
+        </div>
+      </div>
+    </div>
+    <div style="border-top:1.5px solid var(--bd);padding-top:1.8rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
+      <p style="font-size:.78rem;color:var(--m)">2025 AjinaShop. All rights reserved.</p>
+      <div style="display:flex;gap:2rem">
+        <a href="#" class="ft-link" style="font-size:.78rem">Privacy Policy</a>
+        <a href="#" class="ft-link" style="font-size:.78rem">Terms of Service</a>
+        <a href="#" class="ft-link" style="font-size:.78rem">Cookies</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+
+/* ===== PRODUCTS ===== */
+const P=[
+{id:1,nm:"Velvet Matte Lipstick",br:"Huda Beauty",pr:28,ol:38,ct:"makeup",rt:5,rv:142,im:"https://images.unsplash.com/photo-1586495777744-4413f21062fa?w=400&h=400&fit=crop",bdg:"Best Seller",bc:"var(--rose)"},
+{id:2,nm:"Silk Chiffon Blouse",br:"Maison Luxe",pr:89,ol:null,ct:"clothing",rt:4,rv:67,im:"https://images.unsplash.com/photo-1564257631407-4deb1f99d992?w=400&h=400&fit=crop",bdg:"New",bc:"var(--ac2)"},
+{id:3,nm:"Vitamin C Glow Serum",br:"Fenty Skin",pr:45,ol:55,ct:"skincare",rt:5,rv:203,im:"https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=400&h=400&fit=crop",bdg:"Top Rated",bc:"var(--ac)"},
+{id:4,nm:"Crystal Drop Earrings",br:"Swarovski",pr:120,ol:null,ct:"accessories",rt:4,rv:89,im:"https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=400&h=400&fit=crop",bdg:null,bc:null},
+{id:5,nm:"Natural Finish Foundation",br:"NARS",pr:42,ol:50,ct:"makeup",rt:5,rv:318,im:"https://images.unsplash.com/photo-1631214524020-7e18db9a8f92?w=400&h=400&fit=crop",bdg:"Sale",bc:"var(--rose)"},
+{id:6,nm:"Cashmere Wrap Coat",br:"Loro Piana",pr:195,ol:250,ct:"clothing",rt:5,rv:34,im:"https://images.unsplash.com/photo-1539533113208-f6df8cc8b543?w=400&h=400&fit=crop",bdg:"Luxury",bc:"var(--ac2)"},
+{id:7,nm:"Retinol Night Cream",br:"Charlotte Tilbury",pr:65,ol:null,ct:"skincare",rt:4,rv:156,im:"https://images.unsplash.com/photo-1611930022073-b7a4ba5fcccd?w=400&h=400&fit=crop",bdg:null,bc:null},
+{id:8,nm:"Pearl Strand Necklace",br:"Mikimoto",pr:280,ol:null,ct:"accessories",rt:5,rv:52,im:"https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=400&h=400&fit=crop",bdg:"Exclusive",bc:"var(--rdk)"},
+{id:9,nm:"Rose Blush Palette",br:"Too Faced",pr:36,ol:44,ct:"makeup",rt:4,rv:97,im:"https://images.unsplash.com/photo-1583241800698-e8ab01830e07?w=400&h=400&fit=crop",bdg:null,bc:null},
+{id:10,nm:"Satin Midi Dress",br:"Reformation",pr:148,ol:null,ct:"clothing",rt:5,rv:73,im:"https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=400&h=400&fit=crop",bdg:"Trending",bc:"var(--rose)"},
+{id:11,nm:"Hydrating Face Mask",br:"Glow Recipe",pr:32,ol:40,ct:"skincare",rt:4,rv:188,im:"https://images.unsplash.com/photo-1515377905703-c4788e51af15?w=400&h=400&fit=crop",bdg:"Sale",bc:"var(--rose)"},
+{id:12,nm:"Gold Chain Bracelet",br:"Tiffany & Co",pr:180,ol:null,ct:"accessories",rt:5,rv:21,im:"https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=400&h=400&fit=crop",bdg:"Premium",bc:"var(--ac2)"},
+{id:13,nm:"Eyeshadow Primer Potion",br:"Urban Decay",pr:24,ol:null,ct:"makeup",rt:5,rv:264,im:"https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=400&h=400&fit=crop",bdg:null,bc:null},
+{id:14,nm:"Linen Wide-Leg Trousers",br:"COS",pr:95,ol:120,ct:"clothing",rt:4,rv:48,im:"https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=400&h=400&fit=crop",bdg:null,bc:null},
+{id:15,nm:"Hyaluronic Moisturizer",br:"Drunk Elephant",pr:58,ol:null,ct:"skincare",rt:5,rv:312,im:"https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=400&h=400&fit=crop",bdg:"Best Seller",bc:"var(--rose)"},
+{id:16,nm:"Leather Crossbody Bag",br:"Coach",pr:220,ol:null,ct:"accessories",rt:4,rv:91,im:"https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=400&h=400&fit=crop",bdg:null,bc:null}
+];
+
+let cart=[],wish=new Set(),curTab='all';
+
+/* ===== RENDER PRODUCTS ===== */
+function render(tab,search){
+  curTab=tab||curTab;
+  let list=P;
+  if(curTab!=='all')list=list.filter(p=>p.ct===curTab);
+  if(search){const q=search.toLowerCase();list=list.filter(p=>p.nm.toLowerCase().includes(q)||p.br.toLowerCase().includes(q)||p.ct.includes(q))}
+  const g=document.getElementById('pG');g.innerHTML='';
+  if(!list.length){g.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:5rem;color:var(--m)"><i class="fas fa-search" style="font-size:3rem;margin-bottom:1.5rem;display:block;opacity:.15"></i><div style="font-size:1.1rem;font-weight:600">No products found</div><div style="font-size:.85rem;margin-top:.5rem">Try a different search term</div></div>';return}
+  list.forEach((p,i)=>{
+    const w=wish.has(p.id);
+    const stars=Array.from({length:5},(_,s)=>`<i class="fas fa-star ${s<p.rt?'s1':'s0'}" style="font-size:10px"></i>`).join('');
+    const disc=p.ol?Math.round((1-p.pr/p.ol)*100):0;
+    const d=document.createElement('div');
+    d.className='c3d rv-s';
+    d.style.transitionDelay=(i*60)+'ms';
+    d.innerHTML=`
+      <div class="c3d-i ab shm" style="border-radius:22px;position:relative">
+        <div class="ab-in" style="border:1.5px solid var(--bd)">
+          <div class="iz" style="height:280px;position:relative;cursor:none" onclick="openQV(${p.id})">
+            <img src="${p.im}" alt="${p.nm}" style="width:100%;height:100%;object-fit:cover" loading="lazy">
+            ${p.bdg?`<div class="p-badge" style="background:${p.bc}">${p.bdg}</div>`:''}
+            <button onclick="event.stopPropagation();toggleW(${p.id})" class="p-wish ${w?'active':''}" aria-label="Wishlist"><i class="fas fa-heart"></i></button>
+            ${disc?`<div class="p-disc">-${disc}%</div>`:''}
+            <div class="p-qv-hint"><i class="fas fa-eye" style="margin-right:.4rem"></i>Quick View</div>
+            <div class="p-overlay">
+              <button class="p-ov-btn" onclick="event.stopPropagation();openQV(${p.id})"><i class="fas fa-expand"></i> Quick View</button>
+            </div>
+          </div>
+          <div style="padding:1.4rem">
+            <div style="font-size:.75rem;font-weight:700;color:var(--ac2);letter-spacing:1px;text-transform:uppercase;margin-bottom:.3rem">${p.br}</div>
+            <h3 style="font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;margin-bottom:.5rem;line-height:1.3">${p.nm}</h3>
+            <div style="display:flex;align-items:center;gap:3px;margin-bottom:.8rem">${stars}<span style="font-size:.7rem;color:var(--m);margin-left:.4rem">(${p.rv})</span></div>
+            <div style="display:flex;align-items:center;justify-content:space-between">
+              <div style="display:flex;align-items:center;gap:.6rem"><span style="font-size:1.15rem;font-weight:800;color:var(--ac2);font-family:'Playfair Display',serif">$${p.pr}</span>${p.ol?`<span style="font-size:.85rem;text-decoration:line-through;color:var(--m)">$${p.ol}</span>`:''}</div>
+              <button onclick="event.stopPropagation();addCart(${p.id},event)" class="btn-r" style="width:42px;height:42px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:.85rem" aria-label="Add to cart" onmouseover="this.style.transform='scale(1.15)'" onmouseout="this.style.transform=''"><i class="fas fa-plus"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>`;
+    g.appendChild(d);
+    setTimeout(()=>d.classList.add('v'),50+i*60);
+  });
+  initTilt();updateTabLine();
+}
+
+/* ===== TABS ===== */
+function switchTab(t,btn){
+  document.querySelectorAll('.tb').forEach(b=>{b.classList.remove('on');b.style.color='var(--m)'});
+  btn.classList.add('on');btn.style.color='var(--fg)';
+  render(t);
+}
+function goCat(c){const b=document.querySelector(`.tb[data-t="${c}"]`);if(b)switchTab(c,b);document.getElementById('trend').scrollIntoView({behavior:'smooth'})}
+function updateTabLine(){
+  const active=document.querySelector('.tb.on');
+  const line=document.getElementById('tabLine');
+  if(!active||!line)return;
+  const wrap=document.getElementById('tabsW');
+  const wr=wrap.getBoundingClientRect();
+  const ar=active.getBoundingClientRect();
+  line.style.left=(ar.left-wr.left)+'px';
+  line.style.width=ar.width+'px';
+}
+
+/* ===== CART ===== */
+function addCart(id,e){
+  const p=P.find(x=>x.id===id);if(!p)return;
+  const ex=cart.find(x=>x.id===id);
+  if(ex)ex.qty++;else cart.push({...p,qty:1});
+  updCart();toast(p.nm+' added to cart!');
+  flyToCart(p.im,e);
+  const b=document.getElementById('cBtn');
+  b.style.animation='none';void b.offsetWidth;b.style.animation='cBounce .5s cubic-bezier(.68,-.55,.27,1.55)';
+}
+function rmCart(id){cart=cart.filter(c=>c.id!==id);updCart()}
+function chgQty(id,d){const c=cart.find(x=>x.id===id);if(!c)return;c.qty+=d;if(c.qty<=0)rmCart(id);else updCart()}
+function updCart(){
+  const t=cart.reduce((s,c)=>s+c.pr*c.qty,0),n=cart.reduce((s,c)=>s+c.qty,0);
+  const b=document.getElementById('cB');b.textContent=n;b.style.display=n?'flex':'none';
+  document.getElementById('cartT').textContent='$'+t.toFixed(2);
+  document.getElementById('cartL').innerHTML=cart.length?cart.map(c=>`
+    <div style="display:flex;align-items:center;gap:.8rem;padding:.8rem;border-radius:16px;background:var(--gl);border:1.5px solid var(--bd);margin-bottom:.6rem;transition:all .3s" onmouseover="this.style.borderColor='var(--bd2)'" onmouseout="this.style.borderColor='var(--bd)'">
+      <img src="${c.im}" alt="${c.nm}" style="width:56px;height:56px;border-radius:14px;object-fit:cover">
+      <div style="flex:1;min-width:0"><div style="font-size:.88rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${c.nm}</div><div style="font-size:.78rem;color:var(--m);margin-top:.2rem">$${c.pr} x ${c.qty}</div></div>
+      <div style="display:flex;align-items:center;gap:.4rem">
+        <button onclick="chgQty(${c.id},-1)" style="width:28px;height:28px;border-radius:10px;background:var(--gl);border:1.5px solid var(--bd);color:var(--m);font-size:.65rem;display:flex;align-items:center;justify-content:center;transition:all .3s" onmouseover="this.style.color='var(--ac)';this.style.borderColor='var(--bd2)'" onmouseout="this.style.color='var(--m)';this.style.borderColor='var(--bd)'"><i class="fas fa-minus"></i></button>
+        <span style="font-size:.85rem;font-weight:800;min-width:24px;text-align:center">${c.qty}</span>
+        <button onclick="chgQty(${c.id},1)" style="width:28px;height:28px;border-radius:10px;background:var(--gl);border:1.5px solid var(--bd);color:var(--m);font-size:.65rem;display:flex;align-items:center;justify-content:center;transition:all .3s" onmouseover="this.style.color='var(--ac)';this.style.borderColor='var(--bd2)'" onmouseout="this.style.color='var(--m)';this.style.borderColor='var(--bd)'"><i class="fas fa-plus"></i></button>
+      </div>
+      <button onclick="rmCart(${c.id})" style="background:0;color:var(--m);font-size:.8rem;transition:all .3s;padding:6px" onmouseover="this.style.color='var(--rose)'" onmouseout="this.style.color='var(--m)'"><i class="fas fa-trash"></i></button>
+    </div>`).join(''):'<div style="text-align:center;padding:3rem;color:var(--m)"><i class="fas fa-shopping-bag" style="font-size:3rem;margin-bottom:1.5rem;display:block;opacity:.15"></i><div style="font-size:1rem;font-weight:600">Your cart is empty</div><div style="font-size:.85rem;margin-top:.5rem">Add some beautiful items!</div></div>';
+}
+function toggleCart(){document.getElementById('cartMo').classList.toggle('open')}
+function checkout(){if(!cart.length){toast('Your cart is empty!');return}toast('Order placed successfully! Thank you!');cart=[];updCart();toggleCart()}
+
+/* ===== FLY TO CART ===== */
+function flyToCart(imgSrc,e){
+  const fly=document.createElement('img');fly.className='fly-img';fly.src=imgSrc;
+  const rect=e.target.getBoundingClientRect();
+  const cartRect=document.getElementById('cBtn').getBoundingClientRect();
+  fly.style.left=rect.left+'px';fly.style.top=rect.top+'px';
+  document.body.appendChild(fly);
+  requestAnimationFrame(()=>{
+    fly.style.left=cartRect.left+'px';fly.style.top=cartRect.top+'px';
+    fly.style.width='24px';fly.style.height='24px';fly.style.opacity='0';fly.style.borderRadius='8px';
+  });
+  setTimeout(()=>fly.remove(),900);
+}
+
+/* ===== WISHLIST ===== */
+function toggleW(id){
+  if(wish.has(id)){wish.delete(id);toast('Removed from wishlist')}else{wish.add(id);toast('Added to wishlist!')}
+  const b=document.getElementById('wB');b.textContent=wish.size;b.style.display=wish.size?'flex':'none';
+  render(curTab);
+}
+function showWish(){
+  if(!wish.size){toast('Your wishlist is empty');return}
+  const btn=document.querySelector('.tb[data-t="all"]');switchTab('all',btn);
+  document.getElementById('sIn').value='';
+  const g=document.getElementById('pG');g.innerHTML='';
+  P.filter(p=>wish.has(p.id)).forEach((p,i)=>{
+    const stars=Array.from({length:5},(_,s)=>`<i class="fas fa-star ${s<p.rt?'s1':'s0'}" style="font-size:10px"></i>`).join('');
+    const disc=p.ol?Math.round((1-p.pr/p.ol)*100):0;
+    const d=document.createElement('div');d.className='c3d rv-s';
+    d.innerHTML=`<div class="c3d-i ab shm" style="border-radius:22px;position:relative"><div class="ab-in" style="border:1.5px solid var(--bd)">
+      <div class="iz" style="height:280px;position:relative;cursor:none" onclick="openQV(${p.id})"><img src="${p.im}" alt="${p.nm}" style="width:100%;height:100%;object-fit:cover" loading="lazy">
+      <button onclick="event.stopPropagation();toggleW(${p.id})" class="p-wish active" aria-label="Wishlist"><i class="fas fa-heart"></i></button>
+      ${disc?`<div class="p-disc">-${disc}%</div>`:''}</div>
+      <div style="padding:1.4rem"><div style="font-size:.75rem;font-weight:700;color:var(--ac2);letter-spacing:1px;text-transform:uppercase;margin-bottom:.3rem">${p.br}</div>
+      <h3 style="font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;margin-bottom:.5rem">${p.nm}</h3>
+      <div style="display:flex;align-items:center;gap:3px;margin-bottom:.8rem">${stars}<span style="font-size:.7rem;color:var(--m);margin-left:.4rem">(${p.rv})</span></div>
+      <div style="display:flex;align-items:center;justify-content:space-between"><div style="display:flex;align-items:center;gap:.6rem"><span style="font-size:1.15rem;font-weight:800;color:var(--ac2);font-family:'Playfair Display',serif">$${p.pr}</span>${p.ol?`<span style="font-size:.85rem;text-decoration:line-through;color:var(--m)">$${p.ol}</span>`:''}</div>
+      <button onclick="event.stopPropagation();addCart(${p.id},event)" class="btn-r" style="width:42px;height:42px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:.85rem"><i class="fas fa-plus"></i></button></div></div></div></div>`;
+    g.appendChild(d);setTimeout(()=>d.classList.add('v'),50+i*60);
+  });
+  initTilt();
+  document.getElementById('trend').scrollIntoView({behavior:'smooth'});
+  toast('Showing your wishlist');
+}
+
+/* ===== QUICK VIEW ===== */
+function openQV(id){
+  const p=P.find(x=>x.id===id);if(!p)return;
+  const stars=Array.from({length:5},(_,s)=>`<i class="fas fa-star ${s<p.rt?'s1':'s0'}" style="font-size:.9rem"></i>`).join('');
+  const disc=p.ol?Math.round((1-p.pr/p.ol)*100):0;
+  const w=wish.has(p.id);
+  document.getElementById('qvC').innerHTML=`
+    <div style="display:grid;grid-template-columns:1fr 1fr;min-height:480px" class="hero-g">
+      <div style="position:relative;overflow:hidden;min-height:300px">
+        <img src="${p.im}" alt="${p.nm}" style="width:100%;height:100%;object-fit:cover;min-height:300px">
+        ${p.bdg?`<div style="position:absolute;top:1.2rem;left:1.2rem;padding:.5rem 1rem;border-radius:12px;font-size:.85rem;font-weight:800;color:#fff;background:${p.bc};box-shadow:0 4px 15px rgba(0,0,0,.3)">${p.bdg}</div>`:''}
+        ${disc?`<div style="position:absolute;top:1.2rem;right:1.2rem;padding:.5rem 1rem;border-radius:12px;font-size:.85rem;font-weight:800;color:#fff;background:var(--rose);box-shadow:0 4px 15px rgba(0,0,0,.3)">-${disc}%</div>`:''}
+      </div>
+      <div style="padding:2.5rem;display:flex;flex-direction:column;justify-content:center;position:relative">
+        <button onclick="closeQV()" style="position:absolute;top:1.2rem;right:1.2rem;background:0;color:var(--m);font-size:1.3rem;padding:8px;border-radius:10px;transition:all .3s" onmouseover="this.style.color='var(--ac)';this.style.background='var(--gl)'" onmouseout="this.style.color='var(--m)';this.style.background='0'" aria-label="Close"><i class="fas fa-times"></i></button>
+        <div style="font-size:.78rem;font-weight:700;color:var(--ac2);letter-spacing:2px;text-transform:uppercase;margin-bottom:.6rem">${p.br}</div>
+        <h3 style="font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:800;margin-bottom:1rem;line-height:1.2">${p.nm}</h3>
+        <div style="display:flex;align-items:center;gap:5px;margin-bottom:1rem">${stars}<span style="font-size:.85rem;color:var(--m);margin-left:.5rem">${p.rv} reviews</span></div>
+        <p style="font-size:.9rem;color:var(--m);line-height:1.8;margin-bottom:1.8rem">Experience luxury with this premium ${p.ct} product. Crafted with the finest ingredients and materials for the modern woman who demands excellence. Dermatologist tested and cruelty-free.</p>
+        <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.8rem">
+          <span style="font-size:2rem;font-weight:900;color:var(--ac2);font-family:'Playfair Display',serif">$${p.pr}</span>
+          ${p.ol?`<span style="font-size:1.1rem;text-decoration:line-through;color:var(--m)">$${p.ol}</span>`:''}
+        </div>
+        <div style="display:flex;gap:1rem;flex-wrap:wrap">
+          <button onclick="addCart(${p.id},event);closeQV()" class="btn-r mag" style="padding:1rem 1.8rem;border-radius:16px;font-size:.9rem;display:flex;align-items:center;gap:.6rem" onmouseover="addRip(event,this)"><span><i class="fas fa-shopping-bag"></i> Add to Cart</span></button>
+          <button onclick="toggleW(${p.id});closeQV()" class="btn-o mag" style="padding:1rem 1.8rem;border-radius:16px;font-size:.9rem;display:flex;align-items:center;gap:.6rem;color:${w?'var(--rose)':'var(--ac2)'}"><span><i class="fas fa-heart"></i> ${w?'Wishlisted':'Wishlist'}</span></button>
+        </div>
+      </div>
+    </div>`;
+  document.getElementById('qvOv').classList.add('open');
+}
+function closeQV(){document.getElementById('qvOv').classList.remove('open')}
+
+/* ===== TOAST ===== */
+function toast(m){const t=document.getElementById('toast'),s=document.getElementById('tMsg');s.textContent=m;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),3200)}
+
+/* ===== SEARCH ===== */
+function toggleSearch(){const b=document.getElementById('sBox');b.style.maxHeight=b.style.maxHeight==='0px'||!b.style.maxHeight?'80px':'0px';if(b.style.maxHeight==='80px')setTimeout(()=>document.getElementById('sIn').focus(),300)}
+function doSearch(v){render(curTab,v.trim())}
+
+/* ===== SUBSCRIBE ===== */
+function subscribe(){const e=document.getElementById('emIn').value.trim();if(!e||!e.includes('@')){toast('Please enter a valid email');return}toast('Welcome to the AjinaShop Club! Exclusive deals await.');document.getElementById('emIn').value=''}
+
+/* ===== RIPPLE ===== */
+function addRip(e,el){const r=document.createElement('span');r.className='rip';const rect=el.getBoundingClientRect();const sz=Math.max(rect.width,rect.height);r.style.width=r.style.height=sz+'px';r.style.left=(e.clientX-rect.left-sz/2)+'px';r.style.top=(e.clientY-rect.top-sz/2)+'px';el.appendChild(r);setTimeout(()=>r.remove(),700)}
+
+/* ===== 3D TILT ===== */
+function initTilt(){
+  document.querySelectorAll('.c3d').forEach(c=>{
+    c.addEventListener('mousemove',e=>{
+      const i=c.querySelector('.c3d-i'),r=c.getBoundingClientRect();
+      const x=e.clientX-r.left,y=e.clientY-r.top,cx=r.width/2,cy=r.height/2;
+      i.style.transform=`rotateX(${((y-cy)/cy)*-12}deg) rotateY(${((x-cx)/cx)*12}deg) scale(1.03)`;
+    });
+    c.addEventListener('mouseleave',()=>{const i=c.querySelector('.c3d-i');i.style.transform=''});
+  });
+}
+
+/* ===== MAGNETIC BUTTONS ===== */
+function initMag(){
+  document.querySelectorAll('.mag').forEach(el=>{
+    el.addEventListener('mousemove',e=>{
+      const r=el.getBoundingClientRect();
+      const x=e.clientX-r.left-r.width/2,y=e.clientY-r.top-r.height/2;
+      el.style.transform=`translate(${x*.2}px,${y*.2}px)`;
+    });
+    el.addEventListener('mouseleave',()=>{el.style.transform=''});
+  });
+}
+
+/* ===== PARTICLES ===== */
+function initPtc(){
+  const cv=document.getElementById('ptcC'),ctx=cv.getContext('2d');
+  let w,h;function resize(){w=cv.width=window.innerWidth;h=cv.height=window.innerHeight}resize();window.addEventListener('resize',resize);
+  const pts=[];const cols=['rgba(199,56,109,','rgba(232,160,191,','rgba(212,175,55,','rgba(139,34,82,'];
+  for(let i=0;i<70;i++){pts.push({x:Math.random()*w,y:h+Math.random()*h,sz:Math.random()*3+1,sp:Math.random()*1.5+.3,cl:cols[Math.floor(Math.random()*cols.length)],op:Math.random()*.6+.2,dr:Math.random()*2-1})}
+  function draw(){
+    ctx.clearRect(0,0,w,h);
+    pts.forEach(p=>{
+      p.y-=p.sp;p.x+=p.dr*.3;p.op-=.0015;
+      if(p.y<-10||p.op<=0){p.y=h+10;p.x=Math.random()*w;p.op=Math.random()*.6+.2}
+      ctx.beginPath();ctx.arc(p.x,p.y,p.sz,0,Math.PI*2);
+      ctx.fillStyle=p.cl+p.op+')';ctx.fill();
+      ctx.beginPath();ctx.arc(p.x,p.y,p.sz*3,0,Math.PI*2);
+      ctx.fillStyle=p.cl+(p.op*.12)+')';ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+}
+
+/* ===== SCROLL REVEAL ===== */
+function initRv(){
+  const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('v')})},{threshold:.08,rootMargin:'0px 0px -40px 0px'});
+  document.querySelectorAll('.rv,.rv-s,.rv-l,.rv-r').forEach(e=>obs.observe(e));
+}
+
+/* ===== COUNTER ANIM ===== */
+function animC(el,tgt,dur){
+  dur=dur||2000;let s=0;const step=tgt/(dur/16);
+  const fmt=v=>tgt>=1000?(v/1000).toFixed(1)+'K+':Math.floor(v)+'+';
+  function u(){s+=step;el.textContent=fmt(Math.min(s,tgt));if(s<tgt)requestAnimationFrame(u);else el.textContent=fmt(tgt)}
+  u();
+}
+
+/* ===== COUNTDOWN ===== */
+function startCD(){
+  const end=new Date();end.setDate(end.getDate()+2);end.setHours(end.getHours()+14);end.setMinutes(end.getMinutes()+36);
+  function u(){const d=new Date(),df=end-d;if(df<=0)return;
+    document.getElementById('cdD').textContent=String(Math.floor(df/864e5)).padStart(2,'0');
+    document.getElementById('cdH').textContent=String(Math.floor((df/36e5)%24)).padStart(2,'0');
+    document.getElementById('cdM').textContent=String(Math.floor((df/6e4)%60)).padStart(2,'0');
+    document.getElementById('cdS').textContent=String(Math.floor((df/1e3)%60)).padStart(2,'0');
+  }u();setInterval(u,1000);
+}
+
+/* ===== STATS OBSERVER ===== */
+function initStats(){
+  const data=[{el:'s1',t:12400},{el:'s2',t:350},{el:'s3',t:8900},{el:'s4',t:24}];let done=false;
+  const obs=new IntersectionObserver(es=>{if(es[0].isIntersecting&&!done){done=true;data.forEach(d=>animC(document.getElementById(d.el),d.t))}},{threshold:.2});
+  obs.observe(document.getElementById('stSec'));
+}
+
+/* ===== HERO STATS ===== */
+function initHS(){animC(document.getElementById('hs1'),2400,1500);animC(document.getElementById('hs2'),350,1500)}
+
+/* ===== NAV HIDE ===== */
+function initNav(){let last=0;window.addEventListener('scroll',()=>{
+  const st=window.pageYOffset;
+  document.getElementById('nav').classList.toggle('hide',st>last&&st>100);
+  document.getElementById('nav').classList.toggle('scrolled',st>50);
+  last=st;
+},{passive:true})}
+
+/* ===== SCROLL PROGRESS ===== */
+function initProg(){window.addEventListener('scroll',()=>{
+  const st=window.pageYOffset,docH=document.documentElement.scrollHeight-window.innerHeight;
+  document.getElementById('scProg').style.width=(st/docH*100)+'%';
+  document.getElementById('btt').classList.toggle('vis',st>800);
+},{passive:true})}
+
+/* ===== CUSTOM CURSOR ===== */
+function initCur(){
+  const cur=document.getElementById('cur'),d=document.getElementById('curD');
+  let mx=0,my=0,cx=0,cy=0;
+  document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;d.style.left=mx+'px';d.style.top=my+'px'});
+  function follow(){cx+=(mx-cx)*.12;cy+=(my-cy)*.12;cur.style.left=cx+'px';cur.style.top=cy+'px';requestAnimationFrame(follow)}follow();
+  document.querySelectorAll('a,button,.catc,.c3d,.tb,input,.mag').forEach(el=>{
+    el.addEventListener('mouseenter',()=>cur.classList.add('act'));
+    el.addEventListener('mouseleave',()=>cur.classList.remove('act'));
+  });
+  document.addEventListener('mousedown',()=>cur.classList.add('clk'));
+  document.addEventListener('mouseup',()=>cur.classList.remove('clk'));
+  if('ontouchstart' in window){cur.style.display='none';d.style.display='none';document.body.style.cursor='auto';document.querySelectorAll('a,button,input,.catc,.c3d,.mag').forEach(e=>e.style.cursor='pointer')}
+}
+
+/* ===== CLOSE MODALS ===== */
+document.getElementById('cartMo').addEventListener('click',function(e){if(e.target===this)toggleCart()});
+document.getElementById('qvOv').addEventListener('click',function(e){if(e.target===this)closeQV()});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){if(document.getElementById('cartMo').classList.contains('open'))toggleCart();if(document.getElementById('qvOv').classList.contains('open'))closeQV()}
+});
+
+/* ===== LOADER ===== */
+window.addEventListener('load',()=>{setTimeout(()=>document.getElementById('loader').classList.add('gone'),3000)});
+
+/* ===== INIT ===== */
+document.addEventListener('DOMContentLoaded',()=>{
+  initPtc();render('all');initRv();initStats();initHS();startCD();initNav();initProg();initCur();initMag();
+  setTimeout(updateTabLine,300);
+  window.addEventListener('resize',updateTabLine);
+});
+</script>
+</body>
+</html>
