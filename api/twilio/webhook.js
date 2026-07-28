@@ -8,17 +8,16 @@
 //   Join code: "join they-shaking"
 //   Sandbox participant: whatsapp:+491627785014
 
-export default async function handler(req, res) {
-  // Twilio webhooks are always POST with application/x-www-form-urlencoded
+module.exports = async (req, res) => {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
   try {
     // Extract incoming message details from Twilio's request body
-    const from = req.body?.From || '';          // e.g. whatsapp:+491627785014
-    const to = req.body?.To || '';              // e.g. whatsapp:+14155238886
-    const body = req.body?.Body || '';           // the message text the user sent
+    const from = req.body?.From || '';
+    const to = req.body?.To || '';
+    const body = req.body?.Body || '';
     const profileName = req.body?.ProfileName || '';
     const messageSid = req.body?.MessageSid || '';
 
@@ -41,14 +40,14 @@ export default async function handler(req, res) {
   <Message>${escapeXml(replyText)}</Message>
 </Response>`);
   } catch (error) {
-    console.error('Twilio webhook error:', error);
+    console.error('Twilio webhook error:', error?.message || error);
     res.setHeader('Content-Type', 'text/xml');
     return res.status(200).send(`<?xml version="1.0" encoding="UTF-8"?>
 <Response>
   <Message>Thank you for your message. We will get back to you shortly.</Message>
 </Response>`);
   }
-}
+};
 
 function escapeXml(str) {
   return String(str)

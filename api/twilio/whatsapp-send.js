@@ -1,7 +1,7 @@
 // Twilio WhatsApp Send API Endpoint
 const twilio = require('twilio');
 
-export default async function handler(req, res) {
+module.exports = async (req, res) => {
   // CORS headers
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -45,10 +45,10 @@ export default async function handler(req, res) {
     });
 
   } catch (error) {
-    console.error('Twilio WhatsApp error:', error);
+    console.error('Twilio WhatsApp error:', error?.message || error);
     return res.status(500).json({
       error: 'Failed to send WhatsApp message',
-      details: error.message
+      details: error?.message || 'Unknown error'
     });
   }
-}
+};

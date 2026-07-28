@@ -1,7 +1,7 @@
 // Deepgram Text-to-Speech API Endpoint
 const axios = require('axios');
 
-export default async function handler(req, res) {
+module.exports = async (req, res) => {
   // CORS headers
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -43,10 +43,10 @@ export default async function handler(req, res) {
     return res.status(200).send(response.data);
 
   } catch (error) {
-    console.error('Deepgram TTS error:', error);
+    console.error('Deepgram TTS error:', error?.message || error);
     return res.status(500).json({
       error: 'Text-to-Speech failed',
-      details: error.message
+      details: error?.message || 'Unknown error'
     });
   }
-}
+};

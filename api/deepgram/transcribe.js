@@ -2,7 +2,7 @@
 // Handles both raw audio blob (Content-Type: audio/webm) and JSON { audioData }
 const axios = require('axios');
 
-export default async function handler(req, res) {
+module.exports = async (req, res) => {
   // CORS headers
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -27,7 +27,7 @@ export default async function handler(req, res) {
     }
     // Case 2: JSON body with audioData field
     else if (req.body && req.body.audioData) {
-      audioBuffer = req.body.audioData;
+      audioBuffer = Buffer.from(req.body.audioData, 'base64');
     }
     // Case 3: Raw body as a string or other format
     else if (req.body && typeof req.body === 'string') {
@@ -51,22 +51,28 @@ export default async function handler(req, res) {
         headers: {
           'Authorization': `Token ${process.env.DEEPGRAM_API_KEY}`,
           'Content-Type': contentType
-        }
+        },
+        responseType: 'json',
+        timeout: 30000
       }
     );
 
+    // Extract transcript from Deepgram response
+    const transcript = response.data?.results?.channels?.[0]?.alternatives?.[0]?.transcript || '';
+    const confidence = response.data?.results?.channels?.[0]?.alternatives?.[0]?.confidence || 0;
+
     return res.status(200).json({
       success: true,
-      transcript: response.data.results?.channels[0]?.alternatives[0]?.transcript || '',
-      confidence: response.data.results?.channels[0]?.alternatives[0]?.confidence || 0,
-      words: response.data.results?.channels[0]?.alternatives[0]?.words || []
+      transcript: transcript,
+      confidence: confidence,
+      model: model
     });
 
   } catch (error) {
-    console.error('Deepgram transcription error:', error);
+    console.error('Deepgram transcribe error:', error?.message || error);
     return res.status(500).json({
       error: 'Transcription failed',
-      details: error.message
+      details: error?.message || 'Unknown error'
     });
   }
-}
+};

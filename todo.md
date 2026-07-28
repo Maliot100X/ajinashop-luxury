@@ -1,8 +1,19 @@
-# AJINASHOP Luxury — Fix Plan
+# AJINASHOP Luxury — Fix API 404 & Polish
 
-## Fixes Required
-- [ ] 1. Fix category tabs — verify tabs filter products correctly in browser; fix any JS issues
-- [ ] 2. Fix WhatsApp/Twilio — update WhatsApp number to Twilio Sandbox +14155238886; fix WhatsApp button to use correct number; add Twilio webhook endpoint for sandbox
-- [ ] 3. Fix mobile responsiveness — improve CSS media queries for better mobile experience
-- [ ] 4. Commit and push all changes to GitHub
-- [ ] 5. Redeploy to Vercel and verify the live site works
+## Critical Fix
+- [ ] Fix API 404 issue: `/api/**/*.js` endpoints return 404 on Vercel
+  - Root cause: `builds` config with `@vercel/node` + mixed CommonJS/ESM syntax not working
+  - Solution: Convert API files to pure CommonJS (module.exports) OR use zero-config approach
+  - Must verify locally before deploying
+- [ ] Verify all endpoints return 200 after fix (transcribe, tts, webhook, whatsapp-send, sms-send)
+
+## Verify (No Breaking Changes)
+- [ ] Category tabs still filter products correctly
+- [ ] Mobile responsiveness still good
+- [ ] Voice assistant works (Deepgram + browser fallback)
+- [ ] WhatsApp number correct (+14155238886)
+
+## Deploy
+- [ ] Push to GitHub (Maliot100X/ajinashop-luxury, main branch)
+- [ ] Deploy to Vercel ONE TIME only (user said stop redeploying)
+- [ ] Final verification of live site
