@@ -8,8 +8,9 @@ const API_BASE_URL = window.location.hostname === 'localhost'
   : 'https://ajinashop-luxury.vercel.app';
 
 // Deepgram Configuration
+// API keys are handled server-side by the API endpoints - not needed in browser
 const DEEPGRAM_CONFIG = {
-  apiKey: process.env.DEEPGRAM_API_KEY,
+  apiKey: (typeof process !== 'undefined' && process.env && process.env.DEEPGRAM_API_KEY) || '',
   models: {
     listen: 'nova-3',
     speak: 'aura-2-odysseus-en'
@@ -22,11 +23,12 @@ const DEEPGRAM_CONFIG = {
 };
 
 // Twilio Configuration
+// API keys are handled server-side by the API endpoints - not needed in browser
 const TWILIO_CONFIG = {
-  accountSid: process.env.TWILIO_ACCOUNT_SID,
-  authToken: process.env.TWILIO_AUTH_TOKEN,
-  phoneNumber: process.env.TWILIO_PHONE_NUMBER,
-  whatsappNumber: process.env.TWILIO_WHATSAPP_NUMBER,
+  accountSid: (typeof process !== 'undefined' && process.env && process.env.TWILIO_ACCOUNT_SID) || '',
+  authToken: (typeof process !== 'undefined' && process.env && process.env.TWILIO_AUTH_TOKEN) || '',
+  phoneNumber: (typeof process !== 'undefined' && process.env && process.env.TWILIO_PHONE_NUMBER) || '',
+  whatsappNumber: (typeof process !== 'undefined' && process.env && process.env.TWILIO_WHATSAPP_NUMBER) || '',
   endpoints: {
     sendWhatsApp: `${API_BASE_URL}/api/twilio/whatsapp-send`,
     sendSMS: `${API_BASE_URL}/api/twilio/sms-send`
