@@ -1070,10 +1070,22 @@ ol {
 .voice-transcript .user-message {
   color: var(--text-primary);
   margin-bottom: var(--spacing-sm);
+  padding-left: 0.5rem;
+  border-left: 2px solid var(--accent-secondary);
 }
 
 .voice-transcript .ai-message {
   color: var(--accent-primary);
+  padding-left: 0.5rem;
+  border-left: 2px solid var(--rose-primary);
+  margin-bottom: var(--spacing-sm);
+}
+
+.voice-demo-chip:hover {
+  background: var(--rose-gradient) !important;
+  color: white !important;
+  border-color: transparent !important;
+  transform: translateY(-1px);
 }
 
 /* ==================== WHATSAPP FLOATING BUTTON ==================== */

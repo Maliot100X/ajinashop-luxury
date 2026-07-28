@@ -15,6 +15,7 @@ class VoiceAssistant {
     this.mediaRecorder = null;
     this.audioChunks = [];
     this.transcriptHistory = [];
+    this.mediaStream = null;
     
     this.init();
   }
@@ -22,7 +23,6 @@ class VoiceAssistant {
   init() {
     this.setupButton();
     this.setupRecognition();
-    this.setupVoiceWebSocket();
   }
   
   setupButton() {
@@ -30,7 +30,8 @@ class VoiceAssistant {
     const panel = document.querySelector('.voice-assistant-panel');
     
     if (voiceBtn) {
-      voiceBtn.addEventListener('click', () => {
+      voiceBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
         this.toggleAssistant();
       });
     }
@@ -38,9 +39,7 @@ class VoiceAssistant {
     // Close panel when clicking outside
     document.addEventListener('click', (e) => {
       if (!e.target.closest('.voice-assistant') && panel && panel.classList.contains('active')) {
-        panel.classList.remove('active');
-        voiceBtn.classList.remove('active');
-        this.stopListening();
+        this.closeAssistant();
       }
     });
   }
@@ -49,45 +48,46 @@ class VoiceAssistant {
     const panel = document.querySelector('.voice-assistant-panel');
     const btn = document.querySelector('.voice-assistant-btn');
     
-    panel.classList.toggle('active');
-    btn.classList.toggle('active');
-    
     if (panel.classList.contains('active')) {
+      this.closeAssistant();
+    } else {
+      panel.classList.add('active');
+      btn.classList.add('active');
       this.speak(VOICE_ASSISTANT_PROMPTS.greeting);
       this.startListening();
-    } else {
-      this.stopListening();
-      this.synthesis.cancel();
     }
   }
   
+  closeAssistant() {
+    const panel = document.querySelector('.voice-assistant-panel');
+    const btn = document.querySelector('.voice-assistant-btn');
+    panel.classList.remove('active');
+    btn.classList.remove('active');
+    this.stopListening();
+    if (this.synthesis) this.synthesis.cancel();
+  }
+  
   setupRecognition() {
-    // Use Web Speech API as fallback
+    // Use Web Speech API as a fallback for browsers that support it
     if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
       this.recognition = new SpeechRecognition();
-      this.recognition.continuous = true;
-      this.recognition.interimResults = true;
+      this.recognition.continuous = false;
+      this.recognition.interimResults = false;
       this.recognition.lang = 'en-US';
       
       this.recognition.onstart = () => {
-        this.updateStatus('Listening...', true);
+        this.updateStatus('Listening... Speak now', true);
         this.isListening = true;
       };
       
       this.recognition.onresult = (event) => {
-        let interimTranscript = '';
         let finalTranscript = '';
-        
         for (let i = event.resultIndex; i < event.results.length; i++) {
-          const transcript = event.results[i][0].transcript;
           if (event.results[i].isFinal) {
-            finalTranscript += transcript;
-          } else {
-            interimTranscript += transcript;
+            finalTranscript += event.results[i][0].transcript;
           }
         }
-        
         if (finalTranscript) {
           this.processTranscript(finalTranscript);
         }
@@ -95,71 +95,121 @@ class VoiceAssistant {
       
       this.recognition.onerror = (event) => {
         console.error('Speech recognition error:', event.error);
-        this.updateStatus('Error: ' + event.error, false);
+        this.updateStatus('Ready', false);
       };
       
       this.recognition.onend = () => {
-        if (this.isListening) {
-          this.recognition.start();
-        }
+        this.isListening = false;
       };
-    }
-  }
-  
-  async setupVoiceWebSocket() {
-    // Direct Deepgram WebSocket connection
-    try {
-      const deepgramUrl = `${DEEPGRAM_CONFIG.endpoints.stream}?model=${DEEPGRAM_CONFIG.models.listen}&smart_format=true&utterances=true&language=en-US`;
-      
-      this.ws = new WebSocket(deepgramUrl, ['token', DEEPGRAM_CONFIG.apiKey]);
-      
-      this.ws.onopen = () => {
-        console.log('Deepgram WebSocket connected');
-      };
-      
-      this.ws.onmessage = (event) => {
-        const response = JSON.parse(event.data);
-        if (response.channel?.alternatives?.[0]?.transcript) {
-          const transcript = response.channel.alternatives[0].transcript;
-          this.processTranscript(transcript);
-        }
-      };
-      
-      this.ws.onerror = (error) => {
-        console.error('WebSocket error:', error);
-      };
-      
-      this.ws.onclose = () => {
-        console.log('WebSocket closed');
-      };
-    } catch (error) {
-      console.error('Failed to setup WebSocket:', error);
     }
   }
   
   async startListening() {
+    this.updateStatus('Listening... Speak now', true);
+    
     try {
       // Request microphone access
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
-      this.source = this.audioContext.createMediaStreamSource(stream);
+      this.mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
       
-      // Use Web Speech API if available
-      if (this.recognition) {
-        this.recognition.start();
-      }
+      // Deepgram API approach: record audio, send to our /api/deepgram/transcribe endpoint
+      this.audioChunks = [];
+      this.mediaRecorder = new MediaRecorder(this.mediaStream);
+      
+      this.mediaRecorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          this.audioChunks.push(event.data);
+        }
+      };
+      
+      this.mediaRecorder.onstop = async () => {
+        if (this.audioChunks.length > 0) {
+          await this.transcribeAudio();
+        }
+      };
+      
+      this.mediaRecorder.start();
+      this.isListening = true;
+      this.updateStatus('Listening... Speak now', true);
+      
+      // Auto-stop after 8 seconds if user does not click stop
+      this.recordingTimeout = setTimeout(() => {
+        if (this.isListening) {
+          this.stopListening();
+        }
+      }, 8000);
       
     } catch (error) {
-      console.error('Microphone access denied:', error);
-      showToast('Microphone access is required for voice assistant', 'error');
+      console.error('Microphone access denied or MediaRecorder not available:', error);
+      // Fall back to Web Speech API if available
+      if (this.recognition) {
+        try {
+          this.recognition.start();
+        } catch (e) {
+          console.error('Web Speech API also failed:', e);
+          showToast('Microphone access is required for the voice assistant', 'error');
+          this.updateStatus('Mic access needed', false);
+        }
+      } else {
+        showToast('Your browser does not support voice input', 'error');
+        this.updateStatus('Not supported', false);
+      }
+    }
+  }
+  
+  async transcribeAudio() {
+    this.updateStatus('Processing...', true);
+    
+    try {
+      const audioBlob = new Blob(this.audioChunks, { type: 'audio/webm' });
+      
+      // If the blob is too small, skip
+      if (audioBlob.size < 1000) {
+        this.updateStatus('Ready', false);
+        return;
+      }
+      
+      // Send to our Deepgram transcription API endpoint
+      const response = await fetch(`${API_BASE_URL}/api/deepgram/transcribe`, {
+        method: 'POST',
+        body: audioBlob
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success && data.transcript && data.transcript.trim()) {
+          this.processTranscript(data.transcript);
+        } else {
+          this.updateStatus('Ready - try again', false);
+        }
+      } else {
+        console.error('Deepgram API error:', response.status);
+        this.updateStatus('Ready - try again', false);
+      }
+    } catch (error) {
+      console.error('Transcription failed:', error);
+      this.updateStatus('Ready', false);
     }
   }
   
   stopListening() {
     this.isListening = false;
     
+    if (this.recordingTimeout) {
+      clearTimeout(this.recordingTimeout);
+      this.recordingTimeout = null;
+    }
+    
+    if (this.mediaRecorder && this.mediaRecorder.state !== 'inactive') {
+      this.mediaRecorder.stop();
+    }
+    
     if (this.recognition) {
-      this.recognition.stop();
+      try { this.recognition.stop(); } catch (e) {}
+    }
+    
+    if (this.mediaStream) {
+      this.mediaStream.getTracks().forEach(track => track.stop());
+      this.mediaStream = null;
     }
     
     if (this.audioContext) {
@@ -173,44 +223,80 @@ class VoiceAssistant {
   processTranscript(transcript) {
     console.log('Transcript:', transcript);
     
-    // Add to transcript history
     this.addTranscriptMessage(transcript, 'user');
     
-    // Process the query
     const response = this.generateResponse(transcript.toLowerCase());
     
-    // Speak response
     setTimeout(() => {
       this.speak(response);
-    }, 500);
+    }, 300);
   }
   
   generateResponse(query) {
-    // Simple keyword-based response system
+    // Greeting
     if (query.includes('hello') || query.includes('hi') || query.includes('hey')) {
       return VOICE_ASSISTANT_PROMPTS.greeting;
     }
     
-    if (query.includes('product') || query.includes('show') || query.includes('see')) {
-      const product = PRODUCTS.find(p => query.includes(p.name.toLowerCase()));
-      if (product) {
-        return VOICE_ASSISTANT_PROMPTS.productQuery(product.name);
-      }
-      return VOICE_ASSISTANT_PROMpts.unknownQuery;
+    // Product search - find specific product by name
+    const matchedProduct = PRODUCTS.find(p => query.includes(p.name.toLowerCase().split(' ')[0]));
+    if (matchedProduct && (query.includes('product') || query.includes('about') || query.includes('tell'))) {
+      return `${matchedProduct.name} is ${formatPrice(matchedProduct.price)}. ${matchedProduct.description} It is one of our most popular ${matchedProduct.category} products with ${matchedProduct.reviews} happy reviews. Would you like to add it to your cart?`;
     }
     
+    // Show all products
+    if (query.includes('show') && (query.includes('product') || query.includes('collection') || query.includes('all'))) {
+      return `We have ${PRODUCTS.length} premium products across skincare, makeup, fragrances, haircare, body care, and gift sets. Our bestsellers include the Rose Gold Recovery Serum at $79, the Diamond Dust Highlighter at $45, and the Midnight Rose Perfume at $150. Which category interests you most?`;
+    }
+    
+    // Skincare category
+    if (query.includes('skincare') || query.includes('serum') || query.includes('cream')) {
+      const skincare = PRODUCTS.filter(p => p.category === 'skincare');
+      return `Our skincare collection features ${skincare.length} premium products. The Rose Gold Recovery Serum at $79 is our bestselling anti-aging serum. The Luxe Night Recovery Cream at $99 provides intensive overnight repair. Would you like to know more about any of these?`;
+    }
+    
+    // Makeup category
+    if (query.includes('makeup') || query.includes('lipstick') || query.includes('highlighter')) {
+      const makeup = PRODUCTS.filter(p => p.category === 'makeup');
+      return `Our makeup collection features ${makeup.length} products. The Velvet Matte Lipstick at $35 offers long-wearing comfort. The Diamond Dust Highlighter at $45 creates a radiant glow. Which shade are you looking for?`;
+    }
+    
+    // Fragrances
+    if (query.includes('perfume') || query.includes('fragrance') || query.includes('scent')) {
+      return `Our signature fragrance is the Midnight Rose Perfume at $150, an enchanting blend of Bulgarian rose, midnight jasmine, and warm amber. It is our most exclusive scent. Would you like to order it?`;
+    }
+    
+    // Delivery / shipping
+    if (query.includes('delivery') || query.includes('shipping') || query.includes('deliver')) {
+      return 'We offer complimentary shipping on all orders with guaranteed express delivery worldwide. Most orders arrive within 3 to 5 business days. Premium orders receive priority handling. Would you like to place an order?';
+    }
+    
+    // Price / cost
     if (query.includes('price') || query.includes('cost') || query.includes('how much')) {
-      return VOICE_ASSISTANT_PROMPTS.priceInfo;
+      return 'Our products range from $35 for our Velvet Matte Lipstick to $199 for the Royal Beauty Gift Set. All prices include free shipping and our satisfaction guarantee. Which product would you like pricing for?';
     }
     
-    if (query.includes('order') || query.includes('checkout') || query.includes('buy')) {
+    // Order / checkout / buy
+    if (query.includes('order') || query.includes('checkout') || query.includes('buy') || query.includes('purchase')) {
       return VOICE_ASSISTANT_PROMPTS.orderHelp;
     }
     
+    // Add to cart
     if (query.includes('add') && (query.includes('cart') || query.includes('bag'))) {
       return VOICE_ASSISTANT_PROMPTS.addToCart;
     }
     
+    // WhatsApp / contact
+    if (query.includes('whatsapp') || query.includes('contact') || query.includes('support') || query.includes('help')) {
+      return 'You can reach us on WhatsApp at plus 1 415 523 8886. Click the green WhatsApp button at the bottom left of the page to chat with us directly. Our team is ready to help you with any questions.';
+    }
+    
+    // Features / natural / organic
+    if (query.includes('natural') || query.includes('organic') || query.includes('ingredient')) {
+      return 'All our products are 100 percent natural, organic, and cruelty-free. We use only the finest ingredients to nourish your skin. Would you like to see our natural product collection?';
+    }
+    
+    // Thanks
     if (query.includes('thank')) {
       return VOICE_ASSISTANT_PROMPTS.closing;
     }
@@ -219,26 +305,65 @@ class VoiceAssistant {
     return VOICE_ASSISTANT_PROMPTS.unknownQuery;
   }
   
-  speak(text) {
+  async speak(text) {
+    this.addTranscriptMessage(text, 'ai');
+    this.updateStatus('Speaking...', true);
+    this.isSpeaking = true;
+    
+    // Try Deepgram TTS API first for high-quality voice
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/deepgram/tts`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text })
+      });
+      
+      if (response.ok) {
+        const audioBlob = await response.blob();
+        const audioUrl = URL.createObjectURL(audioBlob);
+        const audio = new Audio(audioUrl);
+        audio.onended = () => {
+          this.isSpeaking = false;
+          this.updateStatus('Ready - tap mic to speak', false);
+          URL.revokeObjectURL(audioUrl);
+        };
+        audio.onerror = () => {
+          this.isSpeaking = false;
+          this.updateStatus('Ready', false);
+          this.speakBrowser(text);
+        };
+        await audio.play();
+        return;
+      }
+    } catch (error) {
+      console.warn('Deepgram TTS failed, using browser speech:', error);
+    }
+    
+    // Fall back to browser speech synthesis
+    this.speakBrowser(text);
+  }
+  
+  speakBrowser(text) {
     if (!this.synthesis) {
       console.warn('Speech synthesis not supported');
+      this.isSpeaking = false;
+      this.updateStatus('Ready', false);
       return;
     }
     
-    // Cancel any ongoing speech
     this.synthesis.cancel();
     
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.rate = 1;
-    utterance.pitch = 1;
+    utterance.pitch = 1.05;
     utterance.volume = 1;
     
-    // Try to get a good voice
     const voices = this.synthesis.getVoices();
     const femaleVoice = voices.find(voice => 
       voice.name.includes('Female') || 
       voice.name.includes('Samantha') || 
-      voice.name.includes('Victoria')
+      voice.name.includes('Victoria') ||
+      voice.name.includes('Google US English')
     );
     
     if (femaleVoice) {
@@ -251,11 +376,10 @@ class VoiceAssistant {
     };
     
     utterance.onend = () => {
-      this.updateStatus('Ready', false);
       this.isSpeaking = false;
+      this.updateStatus('Ready - tap mic to speak', false);
     };
     
-    this.addTranscriptMessage(text, 'ai');
     this.synthesis.speak(utterance);
   }
   
@@ -263,25 +387,46 @@ class VoiceAssistant {
     const transcriptDiv = document.querySelector('.voice-transcript');
     if (!transcriptDiv) return;
     
+    // Clear the initial placeholder on first message
+    const placeholder = transcriptDiv.querySelector('p[style*="italic"]');
+    if (placeholder) placeholder.remove();
+    
     const messageDiv = document.createElement('div');
     messageDiv.className = `${type}-message`;
     messageDiv.textContent = text;
     transcriptDiv.appendChild(messageDiv);
     
-    // Scroll to bottom
     transcriptDiv.scrollTop = transcriptDiv.scrollHeight;
   }
   
   updateStatus(text, isActive) {
     const statusDiv = document.querySelector('.voice-assistant-status');
-    const statusDot = document.querySelector('.status-dot');
     
     if (statusDiv) {
       statusDiv.innerHTML = `
-        <span class="status-dot" style="display: ${isActive ? 'inline-block' : 'none'}"></span>
+        <span class="status-dot" style="display: ${isActive ? 'inline-block' : 'none'};"></span>
         ${text}
       `;
     }
+  }
+  
+  // Demo/sample voice previews - click a chip to hear the AI speak about products, delivery, or ordering
+  speakDemo(type) {
+    let text;
+    switch (type) {
+      case 'products':
+        text = `Welcome to AJINASHOP. We have ${PRODUCTS.length} premium products across our collections. Our bestsellers include the Rose Gold Recovery Serum at $79, the Diamond Dust Highlighter at $45, the Midnight Rose Perfume at $150, and the Royal Beauty Gift Set at $199. All products are natural, organic, and cruelty-free. Which one would you like to learn more about?`;
+        break;
+      case 'delivery':
+        text = 'We offer complimentary express shipping on all orders worldwide. Most orders arrive within 3 to 5 business days. Every order includes our satisfaction guarantee and premium packaging. Would you like to place an order today?';
+        break;
+      case 'order':
+        text = 'To place an order, simply browse our collection, click any product to view details, and tap the shopping bag icon to add it to your cart. You can also message us on WhatsApp at plus 1 415 523 8886 for personalized assistance. Would you like me to help you find a product?';
+        break;
+      default:
+        text = VOICE_ASSISTANT_PROMPTS.greeting;
+    }
+    this.speak(text);
   }
 }
 

@@ -340,6 +340,12 @@
       <div class="voice-transcript">
         <p style="color: var(--text-muted); font-style: italic;">Ask me anything about our products...</p>
       </div>
+      <!-- Quick demo prompts - click to hear the AI respond -->
+      <div style="display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.5rem 0 0.75rem;">
+        <button class="voice-demo-chip" onclick="window.ajinashop?.voiceAssistant?.speakDemo('products')" style="font-size: 0.72rem; padding: 0.35rem 0.7rem; background: rgba(199,56,109,0.15); border: 1px solid var(--border-color); border-radius: 20px; color: var(--text-secondary); cursor: pointer; transition: all 0.3s;">Show Products</button>
+        <button class="voice-demo-chip" onclick="window.ajinashop?.voiceAssistant?.speakDemo('delivery')" style="font-size: 0.72rem; padding: 0.35rem 0.7rem; background: rgba(199,56,109,0.15); border: 1px solid var(--border-color); border-radius: 20px; color: var(--text-secondary); cursor: pointer; transition: all 0.3s;">Delivery Info</button>
+        <button class="voice-demo-chip" onclick="window.ajinashop?.voiceAssistant?.speakDemo('order')" style="font-size: 0.72rem; padding: 0.35rem 0.7rem; background: rgba(199,56,109,0.15); border: 1px solid var(--border-color); border-radius: 20px; color: var(--text-secondary); cursor: pointer; transition: all 0.3s;">How to Order</button>
+      </div>
       <div style="display: flex; gap: 0.5rem;">
         <button class="btn btn-ghost" style="flex: 1; padding: 0.5rem;" onclick="window.ajinashop?.voiceAssistant?.startListening()">
           <i class="fas fa-microphone"></i> Speak
