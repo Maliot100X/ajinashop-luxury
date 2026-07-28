@@ -21,7 +21,7 @@
   "author": "AJINASHOP",
   "license": "MIT",
   "dependencies": {
-    "deepgram-sdk": "^3.4.0",
+    "axios": "^1.7.0",
     "twilio": "^5.0.0"
   },
   "devDependencies": {
