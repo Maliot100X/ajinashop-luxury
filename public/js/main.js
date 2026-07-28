@@ -311,7 +311,7 @@ I'd like to inquire about your luxury beauty products.
 Current time: ${new Date().toLocaleString()}
     `.trim());
     
-    const whatsappUrl = `https://wa.me/18777804236?text=${message}`;
+    const whatsappUrl = `https://wa.me/14155238886?text=${message}`;
     window.open(whatsappUrl, '_blank');
     
     showToast('Opening WhatsApp...', 'success');
@@ -596,6 +596,15 @@ class ProductManager {
         // Update active state
         tabsContainer.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
+
+        // Smoothly scroll to the products grid so the user sees the filtered results
+        const grid = document.querySelector('.products-grid');
+        if (grid) {
+          const rect = grid.getBoundingClientRect();
+          if (rect.top > window.innerHeight || rect.top < 0) {
+            grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }
       });
     });
   }
@@ -962,11 +971,18 @@ class PageLoader {
   }
   
   init() {
-    window.addEventListener('load', () => {
+    // Hide loader quickly — components are already initialized on DOMContentLoaded
+    const hide = () => {
       setTimeout(() => {
         this.hideLoader();
-      }, 3000);
-    });
+      }, 1500);
+    };
+    // If the load event already fired, hide now; otherwise wait for it
+    if (document.readyState === 'complete') {
+      hide();
+    } else {
+      window.addEventListener('load', hide);
+    }
   }
   
   hideLoader() {
@@ -999,10 +1015,11 @@ let voiceAssistant;
 let whatsappSupport;
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Initialize all components
+  // Page loader (hides after its own timer)
   const pageLoader = new PageLoader();
-  
-  setTimeout(() => {
+
+  // Initialize all components immediately so tabs and UI work right away
+  try {
     shoppingCart = new ShoppingCart();
     wishlist = new Wishlist();
     productManager = new ProductManager();
@@ -1011,18 +1028,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const animationManager = new AnimationManager();
     voiceAssistant = new VoiceAssistant();
     whatsappSupport = new WhatsAppSupport();
-    
-    setupColorSelection();
-    
-    console.log('AJINASHOP Luxury initialized successfully');
-  }, 3500);
-});
 
-// Make instances available globally
-window.ajinashop = {
-  shoppingCart,
-  wishlist,
-  productManager,
-  voiceAssistant,
-  whatsappSupport
-};
+    setupColorSelection();
+
+    // Update the global references AFTER they are created
+    window.ajinashop = {
+      shoppingCart,
+      wishlist,
+      productManager,
+      voiceAssistant,
+      whatsappSupport
+    };
+
+    console.log('AJINASHOP Luxury initialized successfully');
+  } catch (err) {
+    console.error('AJINASHOP initialization error:', err);
+  }
+});

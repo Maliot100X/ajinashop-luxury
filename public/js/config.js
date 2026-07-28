@@ -28,7 +28,7 @@ const TWILIO_CONFIG = {
   accountSid: (typeof process !== 'undefined' && process.env && process.env.TWILIO_ACCOUNT_SID) || '',
   authToken: (typeof process !== 'undefined' && process.env && process.env.TWILIO_AUTH_TOKEN) || '',
   phoneNumber: (typeof process !== 'undefined' && process.env && process.env.TWILIO_PHONE_NUMBER) || '',
-  whatsappNumber: (typeof process !== 'undefined' && process.env && process.env.TWILIO_WHATSAPP_NUMBER) || '',
+  whatsappNumber: 'whatsapp:+14155238886',
   endpoints: {
     sendWhatsApp: `${API_BASE_URL}/api/twilio/whatsapp-send`,
     sendSMS: `${API_BASE_URL}/api/twilio/sms-send`

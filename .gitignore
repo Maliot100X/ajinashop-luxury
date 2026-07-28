@@ -45,3 +45,5 @@ coverage/
 # Production
 *.min.js.map
 *.css.map
+.vercel
+.env*
