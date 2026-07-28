@@ -1,18 +1,31 @@
 {
   "version": 2,
-  "name": "ajinashop-luxury",
   "builds": [
     {
-      "src": "index.html",
+      "src": "**/*.html",
       "use": "@vercel/static"
+    },
+    {
+      "src": "api/**/*.js",
+      "use": "@vercel/node"
     }
   ],
   "routes": [
     {
+      "src": "/api/(.*)",
+      "dest": "/api/$1"
+    },
+    {
       "src": "/(.*)",
-      "dest": "/index.html"
+      "dest": "/$1"
     }
   ],
-  "cleanUrls": true,
-  "trailingSlash": false
+  "env": {
+    "DEEPGRAM_API_KEY": "@deepgram_api_key",
+    "DEEPGRAM_MODEL": "nova-3",
+    "TWILIO_ACCOUNT_SID": "@twilio_account_sid",
+    "TWILIO_AUTH_TOKEN": "@twilio_auth_token",
+    "TWILIO_PHONE_NUMBER": "@twilio_phone_number",
+    "TWILIO_WHATSAPP_NUMBER": "@twilio_whatsapp_number"
+  }
 }

@@ -1,0 +1,31 @@
+{
+  "name": "ajinashop-luxury",
+  "version": "2.0.0",
+  "description": "AJINASHOP Luxury Beauty E-commerce with Voice Assistant and WhatsApp Integration",
+  "main": "index.html",
+  "scripts": {
+    "start": "serve -p 3000",
+    "build": "node build.js",
+    "deploy": "vercel --prod",
+    "dev": "serve -p 3000 --watch"
+  },
+  "keywords": [
+    "ecommerce",
+    "beauty",
+    "luxury",
+    "voice-assistant",
+    "whatsapp",
+    "deepgram",
+    "twilio"
+  ],
+  "author": "AJINASHOP",
+  "license": "MIT",
+  "dependencies": {
+    "deepgram-sdk": "^3.4.0",
+    "twilio": "^5.0.0"
+  },
+  "devDependencies": {
+    "serve": "^14.2.1",
+    "@vercel/node": "^3.0.0"
+  }
+}
