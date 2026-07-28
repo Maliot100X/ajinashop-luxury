@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="AJINASHOP - Luxury Beauty E-commerce with AI Voice Assistant">
+  <meta name="keywords" content="beauty, luxury, skincare, makeup, voice assistant, AI">
+  <title>AJINASHOP — Luxury Beauty with AI Assistant</title>
+  
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Quicksand:wght@300;400;500;700&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="/css/styles.css">
+  
+  <!-- Deepgram SDK -->
+  <!-- Deepgram handled server-side via API endpoints -->
+</head>
+<body>
+  <!-- Page Loader -->
+  <div id="page-loader">
+    <div class="loader-content">
+      <div class="loader-logo">AJINASHOP</div>
+      <div class="loader-progress">
+        <div class="loader-progress-bar"></div>
+      </div>
+      <p style="color: var(--text-muted); margin-top: 1.5rem; letter-spacing: 0.3em; text-transform: uppercase; font-size: 0.85rem;">Luxury Beauty Experience</p>
+    </div>
+  </div>
+  
+  <!-- Grain Overlay -->
+  <div class="grain-overlay"></div>
+  
+  <!-- Background Effects -->
+  <div class="bg-effects">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+  </div>
+  
+  <!-- Scroll Progress -->
+  <div id="scroll-progress"></div>
+  
+  <!-- ==================== NAVIGATION ==================== -->
+  <nav class="navbar">
+    <a href="#" class="navbar-brand">AJINASHOP</a>
+    
+    <div class="nav-links">
+      <a href="#home" class="nav-link active">Home</a>
+      <a href="#products" class="nav-link">Shop</a>
+      <a href="#collections" class="nav-link">Collections</a>
+      <a href="#about" class="nav-link">About</a>
+      <a href="#contact" class="nav-link">Contact</a>
+    </div>
+    
+    <div class="nav-actions">
+      <button class="nav-action-btn" aria-label="Search" onclick="document.querySelector('.search-input').focus()">
+        <i class="fas fa-search"></i>
+      </button>
+      <button class="nav-action-btn" aria-label="Wishlist">
+        <i class="fas fa-heart"></i>
+        <span class="badge" style="display: none;">0</span>
+      </button>
+      <button class="nav-action-btn" aria-label="Cart">
+        <i class="fas fa-shopping-bag"></i>
+        <span class="badge cart-count" style="display: none;">0</span>
+      </button>
+      <button class="mobile-menu-toggle">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </nav>
+  
+  <!-- ==================== HERO SECTION ==================== -->
+  <section class="hero" id="home">
+    <div class="hero-content">
+      <h1 class="hero-title">
+        <span>Beauty</span> Redefined <span class="highlight">Luxurious</span>
+      </h1>
+      <p class="hero-subtitle">Experience the Future of Beauty Shopping with AI</p>
+      
+      <div class="flex items-center justify-center gap-md" style="margin-top: 2rem;">
+        <button class="btn btn-primary" onclick="document.getElementById('products').scrollIntoView({behavior: 'smooth'})">
+          <i class="fas fa-shopping-bag"></i>
+          Shop Collection
+        </button>
+        <button class="btn btn-secondary" onclick="window.ajinashop?.voiceAssistant?.toggleAssistant()">
+          <i class="fas fa-microphone"></i>
+          Ask AI Assistant
+        </button>
+      </div>
+      
+      <!-- Advanced Search -->
+      <div class="search-section">
+        <div class="search-container">
+          <div class="search-box">
+            <input type="text" class="search-input" placeholder="Search products, brands, ingredients... or use voice">
+            <button class="voice-search-btn" aria-label="Voice Search">
+              <i class="fas fa-microphone"></i>
+            </button>
+            <button class="search-btn" aria-label="Search">
+              <i class="fas fa-search"></i>
+            </button>
+          </div>
+          <div class="search-suggestions">
+            <div class="suggestion-item" style="cursor: pointer;">
+              <div class="suggestion-icon">
+                <i class="fas fa-pump-soap"></i>
+              </div>
+              <div class="suggestion-content">
+                <h4>Skincare Essentials</h4>
+                <p>Cleansers, moisturizers, serums</p>
+              </div>
+            </div>
+            <div class="suggestion-item" style="cursor: pointer;">
+              <div class="suggestion-icon">
+                <i class="fas fa-eye"></i>
+              </div>
+              <div class="suggestion-content">
+                <h4>Makeup Collection</h4>
+                <p>Foundation, lipsticks, eyeshadows</p>
+              </div>
+            </div>
+            <div class="suggestion-item" style="cursor: pointer;">
+              <div class="suggestion-icon">
+                <i class="fas fa-spray-can"></i>
+              </div>
+              <div class="suggestion-content">
+                <h4>Fragrances</h4>
+                <p>Luxury perfumes and body mists</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- ==================== CATEGORY TABS ==================== -->
+  <section class="products-section" style="padding-top: 4rem;">
+    <div class="container">
+      <div class="section-header animate-on-scroll">
+        <span class="section-badge">Shop by Category</span>
+        <h2 class="section-title">Our Collections</h2>
+        <p class="section-description">Discover our carefully curated selection of premium beauty products</p>
+      </div>
+      
+      <div class="tabs-container animate-on-scroll">
+        <!-- Populated by JavaScript -->
+      </div>
+    </div>
+  </section>
+  
+  <!-- ==================== PRODUCTS GRID ==================== -->
+  <section class="products-section" id="products">
+    <div class="container">
+      <div class="section-header animate-on-scroll">
+        <span class="section-badge">Premium Selection</span>
+        <h2 class="section-title">Featured Products</h2>
+        <p class="section-description">Handpicked luxury items from world-renowned brands</p>
+      </div>
+      
+      <div class="products-grid animate-on-scroll">
+        <!-- Products populated by JavaScript -->
+      </div>
+      
+      <div class="text-center" style="margin-top: 3rem;">
+        <button class="btn btn-secondary">
+          <i class="fas fa-th-large"></i>
+          View All Products
+        </button>
+      </div>
+    </div>
+  </section>
+  
+  <!-- ==================== FEATURES SECTION ==================== -->
+  <section class="products-section" id="features">
+    <div class="container">
+      <div class="section-header animate-on-scroll">
+        <span class="section-badge">Why Choose Us</span>
+        <h2 class="section-title">Beauty Without Compromise</h2>
+      </div>
+      
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; max-width: 1200px; margin: 0 auto;">
+        <div class="feature-card animate-on-scroll" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-xl); padding: 2rem; text-align: center; transition: all 0.3s ease;">
+          <div style="width: 80px; height: 80px; margin: 0 auto 1.5rem; border-radius: var(--radius-full); background: var(--rose-gradient); display: flex; align-items: center; justify-content: center;">
+            <i class="fas fa-leaf" style="font-size: 2rem; color: white;"></i>
+          </div>
+          <h3 class="section-title" style="font-size: 1.5rem; margin-bottom: 1rem;">Natural Ingredients</h3>
+          <p style="color: var(--text-muted);">100% organic and cruelty-free products that nourish your skin with nature's finest ingredients.</p>
+        </div>
+        
+        <div class="feature-card animate-on-scroll" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-xl); padding: 2rem; text-align: center; transition: all 0.3s ease;">
+          <div style="width: 80px; height: 80px; margin: 0 auto 1.5rem; border-radius: var(--radius-full); background: var(--rose-gradient); display: flex; align-items: center; justify-content: center;">
+            <i class="fas fa-award" style="font-size: 2rem; color: white;"></i>
+          </div>
+          <h3 class="section-title" style="font-size: 1.5rem; margin-bottom: 1rem;">Premium Quality</h3>
+          <p style="color: var(--text-muted);">Handcrafted with precision and care to deliver exceptional results you can see and feel.</p>
+        </div>
+        
+        <div class="feature-card animate-on-scroll" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-xl); padding: 2rem; text-align: center; transition: all 0.3s ease;">
+          <div style="width: 80px; height: 80px; margin: 0 auto 1.5rem; border-radius: var(--radius-full); background: var(--rose-gradient); display: flex; align-items: center; justify-content: center;">
+            <i class="fas fa-shipping-fast" style="font-size: 2rem; color: white;"></i>
+          </div>
+          <h3 class="section-title" style="font-size: 1.5rem; margin-bottom: 1rem;">Fast Delivery</h3>
+          <p style="color: var(--text-muted);">Complimentary shipping on all orders with guaranteed express delivery worldwide.</p>
+        </div>
+        
+        <div class="feature-card animate-on-scroll" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-xl); padding: 2rem; text-align: center; transition: all 0.3s ease;">
+          <div style="width: 80px; height: 80px; margin: 0 auto 1.5rem; border-radius: var(--radius-full); background: var(--rose-gradient); display: flex; align-items: center; justify-content: center;">
+            <i class="fas fa-headset" style="font-size: 2rem; color: white;"></i>
+          </div>
+          <h3 class="section-title" style="font-size: 1.5rem; margin-bottom: 1rem">Expert Support</h3>
+          <p style="color: var(--text-muted);">Personalized beauty consultations with our world-class skincare specialists and AI assistant.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- ==================== AI ASSISTANT FEATURE ==================== -->
+  <section class="products-section">
+    <div class="container">
+      <div style="background: linear-gradient(135deg, var(--bg-tertiary), var(--bg-secondary)); border: 1px solid var(--border-color); border-radius: var(--radius-xl); padding: 3rem; text-align: center;">
+        <div style="width: 100px; height: 100px; margin: 0 auto 2rem; border-radius: var(--radius-full); background: var(--gold-gradient); display: flex; align-items: center; justify-content: center;">
+          <i class="fas fa-robot" style="font-size: 3rem; color: var(--bg-primary);"></i>
+        </div>
+        <h2 class="section-title" style="margin-bottom: 1rem;">Powered by Deepgram AI</h2>
+        <p style="color: var(--text-muted); font-size: 1.1rem; max-width: 600px; margin: 0 auto 2rem; line-height: 1.8;">
+          Experience the future of beauty shopping with our AI voice assistant. Ask about products, get personalized recommendations, and receive instant support – all with the power of your voice.
+        </p>
+        <button class="btn btn-primary" onclick="window.ajinashop?.voiceAssistant?.toggleAssistant()">
+          <i class="fas fa-microphone"></i>
+          Try Voice Assistant Now
+        </button>
+      </div>
+    </div>
+  </section>
+  
+  <!-- ==================== NEWSLETTER SECTION ==================== -->
+  <section class="products-section">
+    <div class="container">
+      <div class="section-header animate-on-scroll">
+        <span class="section-badge">Stay Connected</span>
+        <h2 class="section-title">Join the Beauty Circle</h2>
+        <p class="section-description">Be the first to know about new collections, exclusive offers, and beauty tips from the experts.</p>
+      </div>
+      
+      <form class="newsletter-form animate-on-scroll" style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; max-width: 600px; margin: 0 auto;">
+        <input type="email" placeholder="Enter your email address" style="flex: 1; min-width: 250px; padding: 1.2rem 2rem; background: var(--bg-card); border: 2px solid var(--border-color); border-radius: var(--radius-2xl); color: var(--text-primary); font-family: var(--font-body); outline: none; transition: all 0.3s ease;">
+        <button type="submit" class="btn btn-primary">
+          <i class="fas fa-envelope"></i>
+          Subscribe
+        </button>
+      </form>
+    </div>
+  </section>
+  
+  <!-- ==================== FOOTER ==================== -->
+  <footer style="background: linear-gradient(180deg, transparent, rgba(4, 0, 4, 0.95)); padding: 4rem 2rem 2rem; border-top: 1px solid var(--border-color);">
+    <div class="container">
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 3rem;">
+        <div>
+          <div class="navbar-brand" style="margin-bottom: 1rem;">AJINASHOP</div>
+          <p style="color: var(--text-muted); line-height: 1.8; margin-bottom: 1.5rem;">
+            Luxury beauty redefined. Discover premium skincare, makeup, and fragrances crafted for the modern beauty enthusiast.
+          </p>
+          <div class="social-links" style="display: flex; gap: 1rem;">
+            <a href="#" style="width: 45px; height: 45px; border-radius: var(--radius-full); border: 2px solid var(--border-color); display: flex; align-items: center; justify-content: center; color: var(--text-muted); transition: all 0.3s ease;">
+              <i class="fab fa-instagram"></i>
+            </a>
+            <a href="#" style="width: 45px; height: 45px; border-radius: var(--radius-full); border: 2px solid var(--border-color); display: flex; align-items: center; justify-content: center; color: var(--text-muted); transition: all 0.3s ease;">
+              <i class="fab fa-facebook-f"></i>
+            </a>
+            <a href="#" style="width: 45px; height: 45px; border-radius: var(--radius-full); border: 2px solid var(--border-color); display: flex; align-items: center; justify-content: center; color: var(--text-muted); transition: all 0.3s ease;">
+              <i class="fab fa-twitter"></i>
+            </a>
+            <a href="#" style="width: 45px; height: 45px; border-radius: var(--radius-full); border: 2px solid var(--border-color); display: flex; align-items: center; justify-content: center; color: var(--text-muted); transition: all 0.3s ease;">
+              <i class="fab fa-pinterest"></i>
+            </a>
+          </div>
+        </div>
+        
+        <div>
+          <h3 style="font-family: var(--font-display); font-size: 1.3rem; font-weight: 500; color: var(--text-primary); margin-bottom: 1.5rem;">Quick Links</h3>
+          <div class="footer-links" style="display: flex; flex-direction: column; gap: 0.8rem;">
+            <a href="#" style="color: var(--text-muted); transition: all 0.3s ease;">Home</a>
+            <a href="#products" style="color: var(--text-muted); transition: all 0.3s ease;">Shop</a>
+            <a href="#about" style="color: var(--text-muted); transition: all 0.3s ease;">About Us</a>
+            <a href="#contact" style="color: var(--text-muted); transition: all 0.3s ease;">Contact</a>
+            <a href="#" style="color: var(--text-muted); transition: all 0.3s ease;">Blog</a>
+          </div>
+        </div>
+        
+        <div>
+          <h3 style="font-family: var(--font-display); font-size: 1.3rem; font-weight: 500; color: var(--text-primary); margin-bottom: 1.5rem;">Categories</h3>
+          <div class="footer-links" style="display: flex; flex-direction: column; gap: 0.8rem;">
+            <a href="#" style="color: var(--text-muted); transition: all 0.3s ease;">Skincare</a>
+            <a href="#" style="color: var(--text-muted); transition: all 0.3s ease;">Makeup</a>
+            <a href="#" style="color: var(--text-muted); transition: all 0.3s ease;">Fragrances</a>
+            <a href="#" style="color: var(--text-muted); transition: all 0.3s ease;">Haircare</a>
+            <a href="#" style="color: var(--text-muted); transition: all 0.3s ease;">Body Care</a>
+          </div>
+        </div>
+        
+        <div>
+          <h3 style="font-family: var(--font-display); font-size: 1.3rem; font-weight: 500; color: var(--text-primary); margin-bottom: 1.5rem;">Customer Service</h3>
+          <div class="footer-links" style="display: flex; flex-direction: column; gap: 0.8rem;">
+            <a href="#" style="color: var(--text-muted); transition: all 0.3s ease;">Shipping Info</a>
+            <a href="#" style="color: var(--text-muted); transition: all 0.3s ease;">Returns & Exchanges</a>
+            <a href="#" style="color: var(--text-muted); transition: all 0.3s ease;">FAQ</a>
+            <a href="#" style="color: var(--text-muted); transition: all 0.3s ease;">Privacy Policy</a>
+            <a href="#" style="color: var(--text-muted); transition: all 0.3s ease;">Terms of Service</a>
+          </div>
+        </div>
+      </div>
+      
+      <div style="text-align: center; padding-top: 3rem; margin-top: 3rem; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.9rem;">
+        <p>&copy; 2025 AJINASHOP. All rights reserved. Crafted with <i class="fas fa-heart" style="color: var(--rose-primary);"></i> for beauty lovers.</p>
+      </div>
+    </div>
+  </footer>
+  
+  <!-- ==================== FLOATING COMPONENTS ==================== -->
+  
+  <!-- Voice Assistant Floating Button -->
+  <div class="voice-assistant">
+    <div class="voice-assistant-panel">
+      <div class="voice-assistant-header">
+        <h3><i class="fas fa-robot"></i> AI Assistant</h3>
+        <div class="voice-assistant-status">
+          <span class="status-dot" style="display: none;"></span>
+          Ready
+        </div>
+      </div>
+      <div class="voice-transcript">
+        <p style="color: var(--text-muted); font-style: italic;">Ask me anything about our products...</p>
+      </div>
+      <!-- Quick demo prompts - click to hear the AI respond -->
+      <div style="display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.5rem 0 0.75rem;">
+        <button class="voice-demo-chip" onclick="window.ajinashop?.voiceAssistant?.speakDemo('products')" style="font-size: 0.72rem; padding: 0.35rem 0.7rem; background: rgba(199,56,109,0.15); border: 1px solid var(--border-color); border-radius: 20px; color: var(--text-secondary); cursor: pointer; transition: all 0.3s;">Show Products</button>
+        <button class="voice-demo-chip" onclick="window.ajinashop?.voiceAssistant?.speakDemo('delivery')" style="font-size: 0.72rem; padding: 0.35rem 0.7rem; background: rgba(199,56,109,0.15); border: 1px solid var(--border-color); border-radius: 20px; color: var(--text-secondary); cursor: pointer; transition: all 0.3s;">Delivery Info</button>
+        <button class="voice-demo-chip" onclick="window.ajinashop?.voiceAssistant?.speakDemo('order')" style="font-size: 0.72rem; padding: 0.35rem 0.7rem; background: rgba(199,56,109,0.15); border: 1px solid var(--border-color); border-radius: 20px; color: var(--text-secondary); cursor: pointer; transition: all 0.3s;">How to Order</button>
+      </div>
+      <div style="display: flex; gap: 0.5rem;">
+        <button class="btn btn-ghost" style="flex: 1; padding: 0.5rem;" onclick="window.ajinashop?.voiceAssistant?.startListening()">
+          <i class="fas fa-microphone"></i> Speak
+        </button>
+        <button class="btn btn-ghost" style="flex: 1; padding: 0.5rem;" onclick="window.ajinashop?.voiceAssistant?.stopListening()">
+          <i class="fas fa-stop"></i> Stop
+        </button>
+      </div>
+    </div>
+    <button class="voice-assistant-btn" aria-label="Voice Assistant">
+      <i class="fas fa-microphone"></i>
+    </button>
+  </div>
+  
+  <!-- WhatsApp Floating Button -->
+  <div class="whatsapp-float">
+    <button class="whatsapp-btn" aria-label="WhatsApp">
+      <i class="fab fa-whatsapp"></i>
+    </button>
+  </div>
+  
+  <!-- Mobile Bottom Navigation -->
+  <nav class="mobile-bottom-nav">
+    <a href="#home" class="mobile-nav-item active">
+      <i class="fas fa-home"></i>
+      <span>Home</span>
+    </a>
+    <a href="#products" class="mobile-nav-item">
+      <i class="fas fa-shopping-bag"></i>
+      <span>Shop</span>
+    </a>
+    <a href="#" class="mobile-nav-item" onclick="window.ajinashop?.voiceAssistant?.toggleAssistant()">
+      <i class="fas fa-microphone"></i>
+      <span>AI</span>
+    </a>
+    <a href="#" class="mobile-nav-item">
+      <i class="fas fa-heart"></i>
+      <span>Wishlist</span>
+    </a>
+    <a href="#contact" class="mobile-nav-item">
+      <i class="fas fa-user"></i>
+      <span>Account</span>
+    </a>
+  </nav>
+  
+  <!-- Scripts -->
+  <script src="/js/config.js"></script>
+  <script src="/js/main.js"></script>
+</body>
+</html>
