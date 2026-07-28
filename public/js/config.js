@@ -189,9 +189,9 @@ const VOICE_ASSISTANT_PROMPTS = {
   addToCart: "Perfect! I've added that to your cart. Would you like to continue shopping or proceed to checkout?"
 };
 
-// Shopping Cart State
-let cart = [];
-let wishlist = [];
+// Shopping Cart State (managed by main.js classes - do not redeclare)
+if (typeof cart === 'undefined') { var cart = []; }
+if (typeof wishlist === 'undefined') { var wishlist = []; }
 
 // Utility Functions
 function formatPrice(price) {

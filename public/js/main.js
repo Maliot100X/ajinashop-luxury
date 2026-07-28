@@ -994,7 +994,6 @@ function setupColorSelection() {
 // ==================== INITIALIZE APPLICATION ====================
 
 let shoppingCart;
-let wishlist;
 let productManager;
 let voiceAssistant;
 let whatsappSupport;
